@@ -9,14 +9,14 @@ argufy(fun, ...)
 \arguments{
 \item{fun}{The function to add the argument checks to.
 The argument checks are specified in the original argument list
-of `fun`. See details below.}
+of \code{fun}. See details below.}
 
 \item{...}{Function arguments to modify, this allows you to argufy existing
 function definitions.}
 }
 \value{
-Another function that is equivalent to `fun`, but implements
-  the declared argument checks.
+Another function that is equivalent to \code{fun}, but implements
+the declared argument checks.
 }
 \description{
 Function argument assertions via a concise declerative syntax.
@@ -25,18 +25,20 @@ at the beginning into the function.
 }
 \details{
 Assertions are separated from the argument names by the
-tilde (`~`) character. See examples below. Note that the equation
+tilde (\code{~}) character. See examples below. Note that the equation
 signs must be present in front of the tilde, even if the argument
 does not have a default value.
 
 Assertions come in three forms:
-1. If the assertion is a function whose name starts with `is.` or
-   `is_`, then this function must return true for the argument's value.
-1. If the assertion is a function whose name starts with `as.` or
-   `as_`, then this is used as a coercion function for the argument.
-1. Otherwise the assertion must be a complete expression that
-   evaluated to `TRUE`. You can refer to the argument and to other
-   arguments within the assertion.
+\enumerate{
+\item If the assertion is a function whose name starts with \code{is.} or
+\code{is_}, then this function must return true for the argument's value.
+\item If the assertion is a function whose name starts with \code{as.} or
+\code{as_}, then this is used as a coercion function for the argument.
+\item Otherwise the assertion must be a complete expression that
+evaluated to \code{TRUE}. You can refer to the argument and to other
+arguments within the assertion.
+}
 }
 \examples{
 prefix <- argufy(function(
