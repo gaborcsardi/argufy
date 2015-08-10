@@ -53,6 +53,8 @@ prefix
 # modify tolower to fail if given a non-character
 tolower <- argufy(base::tolower, x = ~ is.character)
 
-tolower(1)
+\dontrun{
+  tolower(1)
+}
 }
 
