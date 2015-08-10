@@ -42,8 +42,8 @@ function with an error message if they return `FALSE`.
 #' Return the prefixes of specified number of characters
 prefix <- function(
   str =     ~ is.character,
-  len =     ~ is.numeric
-) {
+  len =     ~ is.numeric) {
+  
   substring(x, 1, y)
 }
 ```
@@ -83,8 +83,8 @@ so that you don't have unusable functions lying around:
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ is.character,
-  len =     ~ is.numeric
-) {
+  len =     ~ is.numeric) {
+  
   substring(x, 1, y)
 })
 
@@ -115,10 +115,10 @@ on default values are only tested at running time, though.
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ is.character,
-  len = 3   ~ is.numeric
-) {
+  len = 3   ~ is.numeric) {
+
   substring(x, 1, y)
-  })
+})
 
 prefix
 ```
@@ -156,10 +156,10 @@ can be converted to character vector:
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ as.character,
-  len = 3   ~ is.numeric
-) {
+  len = 3   ~ is.numeric) {
+ 
   substring(x, 1, y)
-  })
+})
 
 prefix
 ```
@@ -190,10 +190,10 @@ to be a finite numeric scalar, i.e. a vector of length one:
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ as.character,
-  len = 3   ~ is.numeric(len) && length(len) == 1 && is.finite(len)
-) {
+  len = 3   ~ is.numeric(len) && length(len) == 1 && is.finite(len)) {
+  
   substring(x, 1, y)
-  })
+})
 
 prefix
 ```
