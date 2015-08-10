@@ -1,5 +1,25 @@
 
-#' Add argument checks to a function
+#' @title Add argument checks to a function
+#'
+#' @description
+#' Function argument assertions via a concise declerative syntax.
+#' The actual assertion code is generated automatically and inserted
+#' at the beginning into the function.
+#'
+#' @details
+#' Assertions are separated from the argument names by the
+#' tilde (`~`) character. See examples below. Note that the equation
+#' signs must be present in front of the tilde, even if the argument
+#' does not have a default value.
+#'
+#' Assertions come in three forms:
+#' 1. If the assertion is a function whose name starts with `is.` or
+#'    `is_`, then this function must return true for the argument's value.
+#' 1. If the assertion is a function whose name starts with `as.` or
+#'    `as_`, then this is used as a coercion function for the argument.
+#' 1. Otherwise the assertion must be a complete expression that
+#'    evaluated to `TRUE`. You can refer to the argument and to other
+#'    arguments within the assertion.
 #'
 #' @param fun The function to add the argument checks to.
 #'   The argument checks are specified in the original argument list
@@ -8,6 +28,15 @@
 #'   the declared argument checks.
 #'
 #' @export
+#' @examples
+#' prefix <- argufy(function(
+#'  str =     ~ as.character,
+#'  len = 3   ~ is.numeric(len) && length(len) == 1 && is.finite(len)
+#' ) {
+#'   substring(x, 1, y)
+#' })
+#'
+#' prefix
 
 argufy <- function(fun) {
   if (!is.function(fun)) stop("'fun' must be a function")

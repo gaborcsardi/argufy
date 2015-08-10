@@ -1,12 +1,5 @@
 
-```{r, setup, echo = FALSE, message = FALSE}
-knitr::opts_chunk$set(
-  comment = "#>",
-  tidy = FALSE,
-  error = FALSE,
-  fig.width = 8,
-  fig.height = 8)
-```
+
 
 # argufy
 
@@ -23,7 +16,8 @@ and add the checking code for you.
 
 ## Installation
 
-```{r eval = FALSE}
+
+```r
 devtools::install_github("gaborcsardi/argufy")
 ```
 
@@ -31,7 +25,8 @@ devtools::install_github("gaborcsardi/argufy")
 
 ### Introduction
 
-```{r}
+
+```r
 library(argufy)
 ```
 
@@ -42,7 +37,8 @@ The simplest assertions are just calls to functions whose name starts with
 `is.` or `is_`. `argufy()` will add calls to these functions and stops the
 function with an error message if they return `FALSE`.
 
-```{r}
+
+```r
 #' Return the prefixes of specified number of characters
 prefix <- function(
   str =     ~ is.character,
@@ -60,15 +56,30 @@ Also note that `prefix` is unusable as it is now. First you need to run
 to the code of the function. If you call `prefix` now, you might get
 error messages, because R interprets the assertions as default arguments.
 
-```{r}
+
+```r
 prefix <- argufy(prefix)
 prefix
+```
+
+```
+#> function (str, len) 
+#> {
+#>     {
+#>         stopifnot(is.character(str))
+#>         stopifnot(is.numeric(len))
+#>     }
+#>     {
+#>         substring(x, 1, y)
+#>     }
+#> }
 ```
 
 It is suggested that you call `argufy()` as you create the function,
 so that you don't have unusable functions lying around:
 
-```{r}
+
+```r
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ is.character,
@@ -80,13 +91,27 @@ prefix <- argufy(function(
 prefix
 ```
 
+```
+#> function (str, len) 
+#> {
+#>     {
+#>         stopifnot(is.character(str))
+#>         stopifnot(is.numeric(len))
+#>     }
+#>     {
+#>         substring(x, 1, y)
+#>     }
+#> }
+```
+
 ### Default values
 
 Default values can be specified after the equation signs, as usual,
 and they must also satisfy the assertions. Note that assertions
 on default values are only tested at running time, though.
 
-```{r}
+
+```r
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ is.character,
@@ -96,6 +121,19 @@ prefix <- argufy(function(
   })
 
 prefix
+```
+
+```
+#> function (str, len = 3) 
+#> {
+#>     {
+#>         stopifnot(is.character(str))
+#>         stopifnot(is.numeric(len))
+#>     }
+#>     {
+#>         substring(x, 1, y)
+#>     }
+#> }
 ```
 
 ### Simple assertions and coercions
@@ -113,7 +151,8 @@ They must signal an error if the coercion is not possible. Here is an
 example for the `prefix` function. This time we only require that `str`
 can be converted to character vector:
 
-```{r}
+
+```r
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ as.character,
@@ -125,6 +164,19 @@ prefix <- argufy(function(
 prefix
 ```
 
+```
+#> function (str, len = 3) 
+#> {
+#>     {
+#>         str <- as.character(str)
+#>         stopifnot(is.numeric(len))
+#>     }
+#>     {
+#>         substring(x, 1, y)
+#>     }
+#> }
+```
+
 Note that the check implementation for `str` is now a coercion.
 
 ### Generic assertions
@@ -133,7 +185,8 @@ Sometimes a single function does not do enough, and a more complex
 assertion is needed. E.g. we can require the `len` argument of `prefix`
 to be a finite numeric scalar, i.e. a vector of length one:
 
-```{r}
+
+```r
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
   str =     ~ as.character,
@@ -143,6 +196,19 @@ prefix <- argufy(function(
   })
 
 prefix
+```
+
+```
+#> function (str, len = 3) 
+#> {
+#>     {
+#>         str <- as.character(str)
+#>         stopifnot(is.numeric(len) && length(len) == 1 && is.finite(len))
+#>     }
+#>     {
+#>         substring(x, 1, y)
+#>     }
+#> }
 ```
 
 In this case the assertion must be a complete expression, and it
@@ -159,4 +225,4 @@ from it.
 
 ## License
 
-MIT © [Gabor Csardi](https://github.com/gaborcsardi).
+MIT © [Gábor Csárdi](https://github.com/gaborcsardi).

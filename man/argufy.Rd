@@ -16,6 +16,35 @@ Another function that is equivalent to \code{fun}, but implements
 the declared argument checks.
 }
 \description{
-Add argument checks to a function
+Function argument assertions via a concise declerative syntax.
+The actual assertion code is generated automatically and inserted
+at the beginning into the function.
+}
+\details{
+Assertions are separated from the argument names by the
+tilde (\code{~}) character. See examples below. Note that the equation
+signs must be present in front of the tilde, even if the argument
+does not have a default value.
+
+Assertions come in three forms:
+\enumerate{
+\item If the assertion is a function whose name starts with \code{is.} or
+\code{is_}, then this function must return true for the argument's value.
+\item If the assertion is a function whose name starts with \code{as.} or
+\code{as_}, then this is used as a coercion function for the argument.
+\item Otherwise the assertion must be a complete expression that
+evaluated to \code{TRUE}. You can refer to the argument and to other
+arguments within the assertion.
+}
+}
+\examples{
+prefix <- argufy(function(
+ str =     ~ as.character,
+ len = 3   ~ is.numeric(len) && length(len) == 1 && is.finite(len)
+) {
+  substring(x, 1, y)
+})
+
+prefix
 }
 
