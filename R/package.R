@@ -24,6 +24,8 @@
 #' @param fun The function to add the argument checks to.
 #'   The argument checks are specified in the original argument list
 #'   of `fun`. See details below.
+#' @param ... Function arguments to modify, this allows you to argufy existing
+#'   function definitions.
 #' @return Another function that is equivalent to `fun`, but implements
 #'   the declared argument checks.
 #'
@@ -37,15 +39,25 @@
 #' })
 #'
 #' prefix
+#'
+#' # modify tolower to fail if given a non-character
+#' tolower <- argufy(base::tolower, x = ~ is.character)
+#'
+#' tolower(1)
 
-argufy <- function(fun) {
+argufy <- function(fun, ...) {
   if (!is.function(fun)) stop("'fun' must be a function")
 
+  fmls <- formals(fun)
+
+  # modify any formals specified in dots
+  fmls <- modify_formals(fmls, ...)
+
   ## Parse the checks
-  checks <- parse_checks(formals(fun))
+  checks <- parse_checks(fmls)
 
   ## Remove checks from the arguments
-  formals(fun) <- remove_checks(formals(fun))
+  formals(fun) <- remove_checks(fmls)
 
   ## Add the checks to the body of the function
   fun <- add_checks(fun, checks)
@@ -53,6 +65,21 @@ argufy <- function(fun) {
   fun
 }
 
+modify_formals <- function(fmls, ...) {
+  new_formals <- eval(substitute(alist(...)))
+  changed <- match(names(new_formals), names(fmls))
+
+  if (any(is.na(changed))) {
+    stop("argument ", sQuote(names(new_formals)[is.na(changed)][1]),
+         " does not exist in the argument list", call. = FALSE)
+  }
+
+  if (length(changed)) {
+    fmls[changed] <- new_formals
+  }
+
+  fmls
+}
 
 parse_checks <- function(args) {
   mapply(names(args), args, SIMPLIFY = FALSE, FUN = function(name, arg) {
