@@ -3,7 +3,7 @@
 #' This function is best placed either in the last file sourced (\code{zzz.R}
 #' or the last file listed in the collate directive) or in \code{.onLoad()}.
 #' @inheritParams argufy
-#' @param package the package to argufy
+#' @param env the package environment to argufy
 #' @export
 argufy_package <- function(env = parent.frame(), ...) {
   if (is.character(env)) {

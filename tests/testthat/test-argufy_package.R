@@ -1,10 +1,36 @@
 {
-  temp_lib <- file.path(tempdir(), "lib")
 
-  old <- .libPaths()
-  .libPaths(temp_lib)
-  on.exit(.libPaths(old))
-  tools:::.install_packages("TestS4")
+  library(disposables)
+
+  pkgs <- make_packages(
+    TestS4 = {
+
+    a <- function(x = ~ is.numeric) {
+      if (x) {
+        1
+      } else {
+        2
+      }
+    }
+
+    setGeneric("paste2", function(x = ~ is.character, y) {
+       standardGeneric("paste2")
+      })
+
+    setMethod("paste2",
+      signature(x = "character", y = "missing"),
+      function(x) {
+        paste(x)
+      })
+
+    setMethod("paste2",
+      c(x = "character", y = "ANY"),
+      function(x, y = ~ is.character) {
+        paste(x, y)
+      })
+
+    argufy:::argufy_package("TestS4")
+    })
 
   context("argufy_package")
   test_that("argufy_package works with simple functions", {
@@ -29,4 +55,5 @@
     expect_error(TestS4::paste2("a", 1), "is.character\\(y\\) is not TRUE")
   })
 
+  dispose_packages(pkgs)
 }

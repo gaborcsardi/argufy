@@ -9,4 +9,5 @@ LazyData: true
 URL: https://github.com/gaborcsardi/argufy
 BugReports: https://github.com/gaborcsardi/argufy/issues
 Suggests: 
-    testthat
+    testthat,
+    disposables
