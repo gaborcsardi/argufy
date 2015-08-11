@@ -2,7 +2,7 @@ context("coercions")
 
 test_that("as_enum works", {
 
-  f <- argufy(function( x = c("alpha", "beta", "gamma") ~ as_enum) {
+  f <- argufy(function( x = c("alpha", "beta", "gamma") ?~ as_enum) {
     x
   })
 

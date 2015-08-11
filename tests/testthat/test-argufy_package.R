@@ -4,7 +4,7 @@ context("argufy_package")
 test_that("argufy_package works with simple functions", {
   pkg <- make_packages(
     simple = {
-      a <- function(x = ~ is.numeric) {
+      a <- function(x = ? is.numeric) {
         if (x) {
           1
         } else {
@@ -29,7 +29,7 @@ test_that("argufy_package works with S4 generics and methods", {
   pkg <- make_packages(
     TestS4 = {
 
-      setGeneric("paste2", function(x = ~ is.character, y) {
+      setGeneric("paste2", function(x = ? is.character, y) {
         standardGeneric("paste2")
       })
 
@@ -41,7 +41,7 @@ test_that("argufy_package works with S4 generics and methods", {
 
       setMethod("paste2",
         c(x = "character", y = "ANY"),
-        function(x, y = ~ is.character) {
+        function(x, y = ? is.character) {
           paste(x, y)
         })
 

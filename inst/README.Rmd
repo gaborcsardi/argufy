@@ -36,18 +36,20 @@ library(argufy)
 ```
 
 Assertions about function arguments are to be added among the arguments,
-separated by a `~` (tilde) character.
+after a `?` or a `?~` operator.
 
-The simplest assertions are just calls to functions whose name starts with
-`is.` or `is_`. `argufy()` will add calls to these functions and stops the
-function with an error message if they return `FALSE`.
+`?` assertions are checks that are run against the argument's value, and
+errors are signalled for `FALSE` return values. The `?~` operator denotes
+coercions, see more about them later.
+
+The simplest assertion consists of a function name only. This is the
+function to be called with the argument's value.
 
 ```{r}
 #' Return the prefixes of specified number of characters
 prefix <- function(
-  str =     ~ is.character,
-  len =     ~ is.numeric) {
-  
+    str =     ? is.character,
+    len =     ? is.numeric) {
   substring(x, 1, y)
 }
 ```
@@ -62,8 +64,13 @@ error messages, because R interprets the assertions as default arguments.
 
 ```{r}
 prefix <- argufy(prefix)
-prefix
+body(prefix)
 ```
+
+We used `body(prefix)` to print the code of the argufied `prefix` function.
+If you just type in the name of the function, then the original code is
+printed and you cannot actually see the checks. (This is because the
+`srcref` attribute of the original function is used for printing.)
 
 It is suggested that you call `argufy()` as you create the function,
 so that you don't have unusable functions lying around:
@@ -71,14 +78,17 @@ so that you don't have unusable functions lying around:
 ```{r}
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
-  str =     ~ is.character,
-  len =     ~ is.numeric) {
-  
+    str =     ? is.character,
+    len =     ? is.numeric) {
   substring(x, 1, y)
 })
 
-prefix
+body(prefix)
 ```
+
+Alternatively, if you are developing an R package, you can use
+the `argufy_package()` function, to run `argufy()` on all functions
+within your package. See more about this later.
 
 ### Default values
 
@@ -89,26 +99,24 @@ on default values are only tested at running time, though.
 ```{r}
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
-  str =     ~ is.character,
-  len = 3   ~ is.numeric) {
-
+    str =     ? is.character,
+    len = 3   ? is.numeric) {
   substring(x, 1, y)
 })
 
-prefix
+body(prefix)
 ```
 
 ### Simple assertions and coercions
 
-Simple assertions consist of a single function name, starting with the
-`is.` or the `is_` prefix. These will be called with the function
-argument's value, and they must return `TRUE`, otherwise an error
-is signalled.
+Simple assertions consist of a single function name. These will be called
+with the function argument's value, and they must return `TRUE`,
+otherwise an error is signalled.
 
 Often we don't want to specify a given type or class for an argument,
-only that R must be able to coerce the argument to it. Simple coercions
-consist of a single function name, starting with the `as.` or `as_` prefix.
-These will be called with the function argument's value as a coercion.
+only that R must be able to coerce the argument to it. This is
+what the `?~` operator does. Simple coercions consist of a single function
+name. These will be called with the function argument's value as a coercion.
 They must signal an error if the coercion is not possible. Here is an
 example for the `prefix` function. This time we only require that `str`
 can be converted to character vector:
@@ -116,13 +124,12 @@ can be converted to character vector:
 ```{r}
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
-  str =     ~ as.character,
-  len = 3   ~ is.numeric) {
- 
+    str =     ?~ as.character,
+    len = 3   ?  is.numeric) {
   substring(x, 1, y)
 })
 
-prefix
+body(prefix)
 ```
 
 Note that the check implementation for `str` is now a coercion.
@@ -130,19 +137,18 @@ Note that the check implementation for `str` is now a coercion.
 ### Generic assertions
 
 Sometimes a single function does not do enough, and a more complex
-assertion is needed. E.g. we can require the `len` argument of `prefix`
-to be a finite numeric scalar, i.e. a vector of length one:
+assertion  or coercion is needed. E.g. we can require the `len` argument
+of `prefix` to be a finite numeric scalar, i.e. a vector of length one:
 
 ```{r}
 #' Return the prefixes of specified number of characters
 prefix <- argufy(function(
-  str =     ~ as.character,
-  len = 3   ~ is.numeric(len) && length(len) == 1 && is.finite(len)) {
-  
+    str =     ?~ as.character,
+    len = 3   ?  is.numeric(len) && length(len) == 1 && is.finite(len)) {
   substring(x, 1, y)
 })
 
-prefix
+body(prefix)
 ```
 
 In this case the assertion must be a complete expression, and it
@@ -156,6 +162,15 @@ package. You only need it when you are _building_ your package. So it is a
 build time dependency, and it is perfectly fine to put it in
 `Suggests` in the `DESCRIPTION` file, you don't need to import anything
 from it.
+
+Alternatively, you can call the `argufy_package()` function, to run
+`argufy()` on all the functions in the package. For functions that do
+not contain any check declarations, this does nothing. You need to make
+sure that `argufy_package()` is called after all functions are defined:
+you need to put it at the end of the R file that is sourced last,
+e.g. you can name this file `zzz.R`. Alternatively you need to include
+a `Collate` field in your `DESCRIPTION` file, and put the source file
+with `argufy_package()` last.
 
 ## License
 

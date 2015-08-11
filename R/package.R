@@ -8,9 +8,9 @@
 #'
 #' @details
 #' Assertions are separated from the argument names by the
-#' tilde (`~`) character. See examples below. Note that the equation
-#' signs must be present in front of the tilde, even if the argument
-#' does not have a default value.
+#' `?` or the `?~` operators. See examples below. Note that the equation
+#' signs must be present in front of the question mark, even if the
+#' argument does not have a default value.
 #'
 #' Assertions come in three forms:
 #' 1. If the assertion is a function whose name starts with `is.` or
@@ -32,8 +32,8 @@
 #' @export
 #' @examples
 #' prefix <- argufy(function(
-#'  str =     ~ as.character,
-#'  len = 3   ~ is.numeric(len) && length(len) == 1 && is.finite(len)
+#'  str =     ?~ as.character,
+#'  len = 3   ?  is.numeric(len) && length(len) == 1 && is.finite(len)
 #' ) {
 #'   substring(x, 1, y)
 #' })
@@ -41,7 +41,7 @@
 #' prefix
 #'
 #' # modify tolower to fail if given a non-character
-#' tolower <- argufy(base::tolower, x = ~ is.character)
+#' tolower <- argufy(base::tolower, x = ? is.character)
 #'
 #' \dontrun{
 #'   tolower(1)
@@ -99,6 +99,7 @@ parse_checks <- function(args) {
     list(
       name = name,
       args = get_arg(arg),
+      coercion = is_coercion(arg),
       check = get_check(arg)
     )
   })
@@ -106,7 +107,7 @@ parse_checks <- function(args) {
 
 
 has_check <- function(arg) {
-  class(arg) == "call" && identical(arg[[1]], quote(`~`))
+  class(arg) == "call" && identical(arg[[1]], quote(`?`))
 }
 
 
@@ -119,9 +120,21 @@ get_arg <- function(arg) {
 }
 
 
+is_coercion <- function(arg) {
+  has_check(arg) &&
+    class(arg[[length(arg)]]) == "call" &&
+    identical(arg[[length(arg)]][[1]], quote(`~`))
+}
+
+
 get_check <- function(arg) {
   if (has_check(arg)) {
-    if (length(arg) == 2) { arg[[2]] } else { arg[[3]] }
+    len <- length(arg)
+    if (is_coercion(arg)) {
+      arg[[length(arg)]][[2]]
+    } else {
+      arg[[length(arg)]]
+    }
   } else {
     NULL
   }
@@ -133,36 +146,47 @@ remove_checks <- function(args) {
 }
 
 
-is_check_function <- function(check) {
-  pre <- substring(as.character(check$check), 1, 3)
-  is.name(check$check) && (pre == "is." || pre == "is_")
-}
-
-
-is_coercion_function <- function(check) {
-  pre <- substring(as.character(check$check), 1, 3)
-  is.name(check$check) && (pre == "as." || pre == "as_")
-}
-
-
-get_check_expr <- function(check) {
-  if (is_check_function(check)) {
+create_assertion_call <- function(check) {
+  if (is.name(check$check)) {
     substitute(
       stopifnot(`_check_`(`_name_`)),
       list(`_check_` = check$check, `_name_` = as.name(check$name))
     )
-  } else if (is_coercion_function(check)) {
-    substitute(
-      `_name_` <- `_coerce_`(`_name_`),
-      list(`_coerce_` = check$check, `_name_` = as.name(check$name))
-    )
-  } else if (is.null(check$check)) {
-    NULL
+    
   } else {
     substitute(
       stopifnot(`_expr_`),
       list(`_expr_` = check$check)
+    )    
+  }
+}
+
+
+create_coercion_call <- function(check) {
+  if (is.name(check$check)) {
+    substitute(
+      `_name_` <- `_coerce_`(`_name_`),
+      list(`_coerce_` = check$check, `_name_` = as.name(check$name))
+    )    
+    
+  } else {
+    substitute(
+      `_name_` <- `_expr_`,
+      list(`_name_` = as.name(check$name), `_expr_` = check$check)
     )
+  }
+}
+
+
+get_check_expr <- function(check) {
+  if (is.null(check$check)) {
+    NULL
+
+  } else if (check$coercion) {
+    create_coercion_call(check)
+
+  } else {
+    create_assertion_call(check)
   }
 }
 

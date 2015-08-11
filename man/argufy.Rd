@@ -25,9 +25,9 @@ at the beginning into the function.
 }
 \details{
 Assertions are separated from the argument names by the
-tilde (\code{~}) character. See examples below. Note that the equation
-signs must be present in front of the tilde, even if the argument
-does not have a default value.
+\code{?} or the \code{?~} operators. See examples below. Note that the equation
+signs must be present in front of the question mark, even if the
+argument does not have a default value.
 
 Assertions come in three forms:
 \enumerate{
@@ -42,8 +42,8 @@ arguments within the assertion.
 }
 \examples{
 prefix <- argufy(function(
- str =     ~ as.character,
- len = 3   ~ is.numeric(len) && length(len) == 1 && is.finite(len)
+ str =     ?~ as.character,
+ len = 3   ?  is.numeric(len) && length(len) == 1 && is.finite(len)
 ) {
   substring(x, 1, y)
 })
@@ -51,7 +51,7 @@ prefix <- argufy(function(
 prefix
 
 # modify tolower to fail if given a non-character
-tolower <- argufy(base::tolower, x = ~ is.character)
+tolower <- argufy(base::tolower, x = ? is.character)
 
 \dontrun{
   tolower(1)
