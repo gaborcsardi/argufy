@@ -50,6 +50,10 @@
 argufy <- function(fun, ...) {
   if (!is.function(fun)) stop("'fun' must be a function")
 
+  # these statements are needed to get S4 functions to work properly
+  was_s4 <- isS4(fun)
+  old_attributes <- attributes(fun)
+
   fmls <- formals(fun)
 
   # modify any formals specified in dots
@@ -63,6 +67,13 @@ argufy <- function(fun, ...) {
 
   ## Add the checks to the body of the function
   fun <- add_checks(fun, checks)
+
+  # S4 functions have additional attributes which need to be set, regular
+  # functions do not have attributes so nothing is done.
+  if (was_s4) {
+    fun <- asS4(fun)
+  }
+  attributes(fun) <- old_attributes
 
   fun
 }
@@ -170,6 +181,10 @@ create_check_expr <- function(checks) {
 add_checks <- function(fun, checks) {
 
   check_expr <- create_check_expr(checks)
+
+  if (length(check_expr) <= 1) {
+    return(fun)
+  }
 
   new_body <- substitute(
     { `_check_`; `_body_` },
