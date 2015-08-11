@@ -1,5 +1,4 @@
-
-context("")
+context("coercions")
 
 test_that("as_enum works", {
 
