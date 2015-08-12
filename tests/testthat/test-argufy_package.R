@@ -3,6 +3,7 @@ library(disposables)
 context("argufy_package")
 test_that("argufy_package works with simple functions", {
   pkg <- make_packages(
+    imports = "argufy",
     simple = {
       a <- function(x = ? is.numeric) {
         if (x) {
@@ -27,6 +28,7 @@ test_that("argufy_package works with simple functions", {
 test_that("argufy_package works with S4 generics and methods", {
 
   pkg <- make_packages(
+    imports = "argufy",
     TestS4 = {
 
       setGeneric("paste2", function(x = ? is.character, y) {
