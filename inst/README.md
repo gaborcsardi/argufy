@@ -1,7 +1,7 @@
 
 
 
-<h1 align="center"><img width="400" src="./inst/logo.png" alt=""></h1>
+![argufy](./inst/logo.png)
 
 > Declarative Arguments Checks
 
