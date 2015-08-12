@@ -3,7 +3,7 @@
 
 # argufy
 
-> Declerative Arguments Checks
+> Declarative Arguments Checks
 
 [![Linux Build Status](https://travis-ci.org/gaborcsardi/argufy.svg?branch=master)](https://travis-ci.org/gaborcsardi/argufy)
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/github/gaborcsardi/argufy?svg=true)](https://ci.appveyor.com/project/gaborcsardi/argufy)
@@ -54,7 +54,7 @@ Note that `argufy()` requires the equal signs after the argument names,
 even if they have no default values. Just leave out the default values.
 
 Also note that `prefix` is unusable as it is now. First you need to run
-`argufy()` on it, to interpret the declerative assertions, and add them
+`argufy()` on it, to interpret the declarative assertions, and add them
 to the code of the function. If you call `prefix` now, you might get
 error messages, because R interprets the assertions as default arguments.
 
