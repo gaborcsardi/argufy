@@ -1,7 +1,7 @@
 Package: argufy
 Title: Declerative Arguments Checks
 Version: 1.0.0
-Author: Gabor Csardi
+Author: Gabor Csardi, Jim Hester
 Maintainer: Gabor Csardi <csardi.gabor@gmail.com>
 Description: Declare your functions with argument checks, and 'argufy' will generate and add the checking code for you.
 License: MIT + file LICENSE
