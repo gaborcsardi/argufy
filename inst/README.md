@@ -1,7 +1,14 @@
 
 
 
-![argufy](./inst/logo.png)
+<h1 align="center">
+    <br>
+    <br>
+    <img width="400" src="./inst/logo.png" alt="crayon">
+    <br>
+    <br>
+    <br>
+</h1>
 
 > Declarative Arguments Checks
 
