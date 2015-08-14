@@ -218,3 +218,32 @@ add_checks <- function(fun, checks) {
 
   fun
 }
+
+#' Replacement for ? function
+#'
+#' This function behaves identically to the existing ? function when used at
+#' the top level, however when used within a function it is an identity function.
+#' @param e1 First argument to pass along to `utils::"?"`.
+#' @param e2 Second argument to pass along to `utils::"?"`.
+#' @usage
+#' # ?e2
+#' # e1?e2
+#' @export
+# argument names are e1 and e2 to match utils::`?`
+`?` <- function(e1, e2) {
+
+  # top level calls have a sys.nframe() of 1
+  if (sys.nframe() <= 1) {
+    call <- sys.call()
+    call[[1]] <- getElsewhere("?", c("argufy"))
+    eval(call)
+  } else {
+    if (missing(e2)) {
+
+      # this allows subsequent missing() calls to work properly
+      quote(expr=)
+    } else {
+      e1
+    }
+  }
+}
