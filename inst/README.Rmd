@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 [![Windows Build status](https://ci.appveyor.com/api/projects/status/github/gaborcsardi/argufy?svg=true)](https://ci.appveyor.com/project/gaborcsardi/argufy)
 [![](http://www.r-pkg.org/badges/version/argufy)](http://www.r-pkg.org/pkg/argufy)
 [![CRAN RStudio mirror downloads](http://cranlogs.r-pkg.org/badges/argufy)](http://www.r-pkg.org/pkg/argufy)
+[![Coverage Status](https://img.shields.io/codecov/c/github/gaborcsardi/argufy/master.svg)](https://codecov.io/github/gaborcsardi/argufy?branch=master)
 
 
 Declare your functions with argument checks, and `argufy()` will generate
