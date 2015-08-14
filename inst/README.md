@@ -243,4 +243,5 @@ with `argufy_package()` last.
 
 ## License
 
-MIT © [Gábor Csárdi](https://github.com/gaborcsardi).
+MIT © [Gábor Csárdi](https://github.com/gaborcsardi), 
+[Jim Hester](http://www.jimhester.com/).
