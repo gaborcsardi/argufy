@@ -98,6 +98,6 @@ test_that("argufy_package works with environments", {
 
   # argufy set on method, calling it directly because S4 method dispatch
   # doesn't seem to work within an environment
-  expect_error(env$`.__T__paste2:.GlobalEnv`$`character#ANY`("a", 1),
+  expect_error(env$`.__T__paste2:base`$`character#ANY`("a", 1),
     "is.character\\(y\\) is not TRUE")
 })
