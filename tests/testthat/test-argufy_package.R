@@ -64,7 +64,7 @@ test_that("argufy_package works with S4 generics and methods", {
 })
 
 test_that("argufy_package works with environments", {
-  env <- new.env(parent = baseenv())
+  env <- new.env(parent = .GlobalEnv)
   env$fun <- function(x = ? is.numeric) {
     x
   }
@@ -73,13 +73,13 @@ test_that("argufy_package works with environments", {
   })
 
   setMethod("paste2", where = env,
-    signature(x = "character", y = "missing"),
-    function(x) {
+    signature(x = "ANY", y = "missing"),
+    function(x, y) {
       paste(x)
     })
 
   setMethod("paste2", where = env,
-    c(x = "character", y = "ANY"),
+    c(x = "ANY", y = "ANY"),
     function(x, y = ? is.character) {
       paste(x, y)
     })
@@ -98,6 +98,6 @@ test_that("argufy_package works with environments", {
 
   # argufy set on method, calling it directly because S4 method dispatch
   # doesn't seem to work within an environment
-  expect_error(env$`.__T__paste2:base`$`character#ANY`("a", 1),
+  expect_error(env$`.__T__paste2:.GlobalEnv`$`ANY#ANY`("a", 1),
     "is.character\\(y\\) is not TRUE")
 })
