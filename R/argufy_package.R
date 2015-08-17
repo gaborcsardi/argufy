@@ -33,11 +33,11 @@ argufy_environment <- function(ns, ...) {
 }
 
 argufy_S4 <- function(ns, ...) {
-  generics <- getGenerics(ns)
+  generics <- methods::getGenerics(ns)
 
   Map(generics@.Data, generics@package, USE.NAMES = FALSE,
       f = function(name, package) {
-        what <- methodsPackageMetaName("T", paste(name, package, sep = ":"))
+        what <- methods::methodsPackageMetaName("T", paste(name, package, sep = ":"))
 
         table <- get(what, envir = ns)
 

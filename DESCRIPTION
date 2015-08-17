@@ -8,6 +8,7 @@ License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/gaborcsardi/argufy
 BugReports: https://github.com/gaborcsardi/argufy/issues
+Imports: methods
 Suggests: 
     testthat,
     disposables
