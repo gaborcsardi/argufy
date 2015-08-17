@@ -149,15 +149,15 @@ remove_checks <- function(args) {
 create_assertion_call <- function(check) {
   if (is.name(check$check)) {
     substitute(
-      stopifnot(`_check_`(`_name_`)),
+      if (!missing(`_name_`)) stopifnot(`_check_`(`_name_`)),
       list(`_check_` = check$check, `_name_` = as.name(check$name))
     )
-    
+
   } else {
     substitute(
-      stopifnot(`_expr_`),
-      list(`_expr_` = check$check)
-    )    
+      if (!missing(`_name_`)) stopifnot(`_expr_`),
+      list(`_expr_` = check$check, `_name_` = as.name(check$name))
+    )
   }
 }
 
@@ -165,13 +165,13 @@ create_assertion_call <- function(check) {
 create_coercion_call <- function(check) {
   if (is.name(check$check)) {
     substitute(
-      `_name_` <- `_coerce_`(`_name_`),
+      if (!missing(`_name_`)) `_name_` <- `_coerce_`(`_name_`),
       list(`_coerce_` = check$check, `_name_` = as.name(check$name))
-    )    
-    
+    )
+
   } else {
     substitute(
-      `_name_` <- `_expr_`,
+      if (!missing(`_name_`)) `_name_` <- `_expr_`,
       list(`_name_` = as.name(check$name), `_expr_` = check$check)
     )
   }

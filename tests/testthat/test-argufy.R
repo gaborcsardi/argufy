@@ -101,3 +101,88 @@ test_that("functions with complex coercions", {
 
   expect_error(f(10, function(){}), "cannot coerce type")
 })
+
+test_that("assertion with missing value", {
+
+  f <- function(
+      x = ? is.numeric
+  ) {
+    if (missing(x)) {
+      "missing"
+    } else {
+      x
+    }
+  }
+
+  expect_equal(f(), "missing")
+
+  expect_equal(argufy(f)(), "missing")
+
+  expect_equal(f(1), 1)
+})
+
+test_that("complex assertion with missing values", {
+
+  f <- function(
+      x = ? is.numeric(x) && length(x) == 1 && is.finite(x)
+  ) {
+    if (missing(x)) {
+      "missing"
+    } else {
+      x
+    }
+  }
+
+  expect_equal(f(), "missing")
+
+  expect_equal(argufy(f)(), "missing")
+
+  expect_equal(f(1), 1)
+})
+
+test_that("coercion with missing value", {
+
+  f <- function(
+      x = ? ~ as.character
+  ) {
+    if (missing(x)) {
+      "missing"
+    } else {
+      x
+    }
+  }
+
+  expect_equal(f(), "missing")
+
+  expect_equal(argufy(f)(), "missing")
+
+  expect_equal(f(1), 1)
+
+  expect_equal(argufy(f)(1), "1")
+})
+
+test_that("complex coercion with missing values", {
+
+  f <- function(
+      x = ? is.numeric,
+      y = ? ~ if (x > 0) as.character(y) else y
+  ) {
+    if (missing(y)) {
+      "missing"
+    } else {
+      y
+    }
+  }
+
+  expect_equal(f(), "missing")
+  expect_equal(argufy(f)(), "missing")
+
+  expect_equal(f(1), "missing")
+  expect_equal(argufy(f)(1), "missing")
+
+  expect_equal(f(1, 1), 1)
+  expect_equal(argufy(f)(1, 1), "1")
+
+  expect_equal(f(0, 1), 1)
+  expect_equal(argufy(f)(0, 1), 1)
+})
