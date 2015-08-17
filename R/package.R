@@ -238,12 +238,6 @@ add_checks <- function(fun, checks) {
     call[[1]] <- getElsewhere("?", c("argufy"))
     eval(call)
   } else {
-    if (missing(e2)) {
-
-      # this allows subsequent missing() calls to work properly
-      quote(expr=)
-    } else {
-      e1
-    }
+    e1
   }
 }
