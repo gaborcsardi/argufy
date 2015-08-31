@@ -29,16 +29,13 @@ Assertions are separated from the argument names by the
 signs must be present in front of the question mark, even if the
 argument does not have a default value.
 
-Assertions come in three forms:
-\enumerate{
-\item If the assertion is a function whose name starts with \code{is.} or
-\code{is_}, then this function must return true for the argument's value.
-\item If the assertion is a function whose name starts with \code{as.} or
-\code{as_}, then this is used as a coercion function for the argument.
-\item Otherwise the assertion must be a complete expression that
-evaluated to \code{TRUE}. You can refer to the argument and to other
-arguments within the assertion.
-}
+The \code{?} operator defines an assertion: a logical expession that
+evaluates to \code{TRUE} exactly if the argument is valid.
+
+The \code{?~} operator defines a coercion. The coericion expression
+is called on the actual argument, and its value is assigned to
+the argument variable. If the coercion is not possible, the coercion
+expressions is expected to signal an error.
 }
 \examples{
 prefix <- argufy(function(

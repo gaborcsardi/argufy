@@ -12,14 +12,13 @@
 #' signs must be present in front of the question mark, even if the
 #' argument does not have a default value.
 #'
-#' Assertions come in three forms:
-#' 1. If the assertion is a function whose name starts with `is.` or
-#'    `is_`, then this function must return true for the argument's value.
-#' 1. If the assertion is a function whose name starts with `as.` or
-#'    `as_`, then this is used as a coercion function for the argument.
-#' 1. Otherwise the assertion must be a complete expression that
-#'    evaluated to `TRUE`. You can refer to the argument and to other
-#'    arguments within the assertion.
+#' The `?` operator defines an assertion: a logical expession that
+#' evaluates to `TRUE` exactly if the argument is valid.
+#'
+#' The `?~` operator defines a coercion. The coericion expression
+#' is called on the actual argument, and its value is assigned to
+#' the argument variable. If the coercion is not possible, the coercion
+#' expressions is expected to signal an error.
 #'
 #' @param fun The function to add the argument checks to.
 #'   The argument checks are specified in the original argument list
