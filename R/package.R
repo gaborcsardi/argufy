@@ -70,8 +70,7 @@ argufy <- function(fun, ...) {
   if (is.call(bod) && identical(bod[[1]], as.symbol("?"))) {
     check <- bod[[3]]
     body(fun) <-
-      substitute({
-        `_result_` <- `_val_`
+      substitute({ `_result_` <- local({`_val_`})
         stopifnot(`_check_`(`_result_`))
         `_result_`
       }, list(`_val_` = bod[[2]],
