@@ -65,6 +65,19 @@ argufy <- function(fun, ...) {
   ## Remove checks from the arguments
   formals(fun) <- remove_checks(fmls)
 
+  # if body ends with a call to `?`
+  bod <- body(fun)
+  if (is.call(bod) && identical(bod[[1]], as.symbol("?"))) {
+    check <- bod[[3]]
+    body(fun) <-
+      substitute({
+        `_result_` <- `_val_`
+        stopifnot(`_check_`(`_result_`))
+        `_result_`
+      }, list(`_val_` = bod[[2]],
+              `_check_` = bod[[3]]))
+  }
+
   ## Add the checks to the body of the function
   fun <- add_checks(fun, checks)
 
