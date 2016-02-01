@@ -30,7 +30,7 @@ tracer_function <- function() {
 
   cat("** argufying functions\n")
   argufy_environment(fun_env)
-  argufy_S4(env, ...)
+  argufy_S4(fun_env)
 
   invisible()
 }
