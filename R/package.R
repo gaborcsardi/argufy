@@ -1,12 +1,16 @@
 
+#' @export
+
+argufy_me <- function() {
+  "OK, boss."
+}
+
 #' @title Add argument checks to a function
 #'
 #' @description
 #' Function argument assertions via a concise declerative syntax.
 #' The actual assertion code is generated automatically and inserted
 #' at the beginning into the function.
-#'
-#' @export
 
 argufy <- function(fun, checks) {
   if (!is.function(fun)) stop("'fun' must be a function")
