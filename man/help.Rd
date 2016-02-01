@@ -8,9 +8,9 @@
 # e1?e2
 }
 \arguments{
-\item{e1}{First argument to pass along to \code{utils::"?"}.}
+\item{e1}{First argument to pass along to `utils::"?"`.}
 
-\item{e2}{Second argument to pass along to \code{utils::"?"}.}
+\item{e2}{Second argument to pass along to `utils::"?"`.}
 }
 \description{
 This function behaves identically to the existing ? function when used at

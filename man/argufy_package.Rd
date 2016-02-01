@@ -8,9 +8,6 @@ argufy_package(env = parent.frame(), ...)
 }
 \arguments{
 \item{env}{the package environment to argufy}
-
-\item{...}{Function arguments to modify, this allows you to argufy existing
-function definitions.}
 }
 \description{
 This function is best placed either in the last file sourced (\code{zzz.R}

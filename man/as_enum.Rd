@@ -17,6 +17,6 @@ Check if a string scalar argument is one of the pre-specified
 choices, with partial matching.
 }
 \seealso{
-\code{\link{argufy}}, \code{\link[base]{match.arg}}
+`::argufy`, `base::match.arg`
 }
 

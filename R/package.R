@@ -6,45 +6,6 @@
 #' The actual assertion code is generated automatically and inserted
 #' at the beginning into the function.
 #'
-#' @details
-#' Assertions are separated from the argument names by the
-#' `?` or the `?~` operators. See examples below. Note that the equation
-#' signs must be present in front of the question mark, even if the
-#' argument does not have a default value.
-#'
-#' The `?` operator defines an assertion: a logical expession that
-#' evaluates to `TRUE` exactly if the argument is valid.
-#'
-#' The `?~` operator defines a coercion. The coericion expression
-#' is called on the actual argument, and its value is assigned to
-#' the argument variable. If the coercion is not possible, the coercion
-#' expressions is expected to signal an error.
-#'
-#' @param fun The function to add the argument checks to.
-#'   The argument checks are specified in the original argument list
-#'   of `fun`. See details below.
-#' @param ... Function arguments to modify, this allows you to argufy existing
-#'   function definitions.
-#' @return Another function that is equivalent to `fun`, but implements
-#'   the declared argument checks.
-#'
-#' @export
-#' @examples
-#' prefix <- argufy(function(
-#'  str =     ?~ as.character,
-#'  len = 3   ?  is.numeric(len) && length(len) == 1 && is.finite(len)
-#' ) {
-#'   substring(x, 1, y)
-#' })
-#'
-#' prefix
-#'
-#' # modify tolower to fail if given a non-character
-#' tolower <- argufy(base::tolower, x = ? is.character)
-#'
-#' \dontrun{
-#'   tolower(1)
-#' }
 
 argufy <- function(fun, ...) {
   if (!is.function(fun)) stop("'fun' must be a function")

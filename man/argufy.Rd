@@ -6,52 +6,9 @@
 \usage{
 argufy(fun, ...)
 }
-\arguments{
-\item{fun}{The function to add the argument checks to.
-The argument checks are specified in the original argument list
-of \code{fun}. See details below.}
-
-\item{...}{Function arguments to modify, this allows you to argufy existing
-function definitions.}
-}
-\value{
-Another function that is equivalent to \code{fun}, but implements
-the declared argument checks.
-}
 \description{
 Function argument assertions via a concise declerative syntax.
 The actual assertion code is generated automatically and inserted
 at the beginning into the function.
-}
-\details{
-Assertions are separated from the argument names by the
-\code{?} or the \code{?~} operators. See examples below. Note that the equation
-signs must be present in front of the question mark, even if the
-argument does not have a default value.
-
-The \code{?} operator defines an assertion: a logical expession that
-evaluates to \code{TRUE} exactly if the argument is valid.
-
-The \code{?~} operator defines a coercion. The coericion expression
-is called on the actual argument, and its value is assigned to
-the argument variable. If the coercion is not possible, the coercion
-expressions is expected to signal an error.
-}
-\examples{
-prefix <- argufy(function(
- str =     ?~ as.character,
- len = 3   ?  is.numeric(len) && length(len) == 1 && is.finite(len)
-) {
-  substring(x, 1, y)
-})
-
-prefix
-
-# modify tolower to fail if given a non-character
-tolower <- argufy(base::tolower, x = ? is.character)
-
-\dontrun{
-  tolower(1)
-}
 }
 
