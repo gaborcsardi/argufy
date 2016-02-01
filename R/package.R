@@ -85,6 +85,14 @@ create_check_expr <- function(checks) {
 
 add_checks <- function(fun, checks) {
 
+  checks <- lapply(names(checks), function(x) {
+    list(
+      check = parse(text = checks[[x]])[[1]],
+      name = x,
+      coercion = FALSE
+    )
+  })
+
   check_expr <- create_check_expr(checks)
 
   if (length(check_expr) <= 1) {
