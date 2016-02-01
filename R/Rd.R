@@ -11,7 +11,7 @@ map_rd <- function(pkgdir) {
 
   if (!file.info(path)$isdir) {
     warning("'man' is not a directory")
-    reutrn(map)
+    return(map)
   }
 
   macros <- get_rd_macros(pkgdir)
