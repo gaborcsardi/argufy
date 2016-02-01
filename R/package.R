@@ -6,6 +6,7 @@
 #' The actual assertion code is generated automatically and inserted
 #' at the beginning into the function.
 #'
+#' @export
 
 argufy <- function(fun, ...) {
   if (!is.function(fun)) stop("'fun' must be a function")
