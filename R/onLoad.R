@@ -14,13 +14,14 @@ tracer_function <- function() {
   instframeno <- find_parent(quote(do_install_source))
   if (is.na(instframeno)) return()
 
+  get_inst <- function(x) get(x, envir = sys.frame(instframeno))
+
   ## Check if we are installing the code, as opposed to the help files
   llframeno <- find_parent(quote(makeLazyLoading))
   if (is.na(llframeno)) return()
 
   ## Check if the package uses argufy at all
-  desc <- get("desc", envir = sys.frame(instframeno))
-  imps <- parse_deps(desc["Imports"])
+  imps <- parse_deps(get_inst("desc")["Imports"])
   if (! "argufy" %in% imps) return()
 
   ## Find the functions
@@ -29,12 +30,13 @@ tracer_function <- function() {
   fun_env <- get("from", envir = sys.frame(lazyframeno))
 
   cat("** argufying functions\n")
-  argufy_environment(fun_env)
-  argufy_S4(fun_env)
+  pkg <- get_inst("pkg_name")
+  pkg_dir <- get_inst("pkg_dir")
+  argufy_pkgdir(pkg, pkg_dir, fun_env)
 
   invisible()
 }
-  
+
 .onLoad <- function(libname, pkgname) {
 
   trace_call <- as.call(list(

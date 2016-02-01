@@ -4,7 +4,7 @@
 \alias{argufy}
 \title{Add argument checks to a function}
 \usage{
-argufy(fun, ...)
+argufy(fun, checks)
 }
 \description{
 Function argument assertions via a concise declerative syntax.
