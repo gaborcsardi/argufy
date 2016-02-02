@@ -21,7 +21,9 @@ tracer_function <- function() {
   if (is.na(llframeno)) return()
 
   ## Check if the package uses argufy at all
-  imps <- parse_deps(get_inst("desc")["Imports"])
+  desc <- get_inst("desc")
+  if (! "Imports" %in% names(desc)) return()
+  imps <- parse_deps(desc["Imports"])
   if (! "argufy" %in% imps) return()
 
   ## Find the functions
