@@ -51,25 +51,13 @@ steps:
 * Include `argufy` in the `Imports` entry in the `DESCRIPTION` file:
 
   ```
-  Package: simplegraph
-  Title: Simple Graph Data Types and Basic Algorithms
-  Version: 1.0.1
-  Author: Gabor Csardi
-  Maintainer: Gabor Csardi <gcsardi@mango-solutions.com>
-  Description: Simple classic graph algorithms for simple graph classes.
-      Graphs may possess vertex and edge attributes. 'simplegraph' has
-      no dependencies and it is written entirely in R, so it is easy to
-      install.
-  License: MIT + file LICENSE
-  LazyData: true
-  URL: https://github.com/mangothecat/simplegraph
-  BugReports: https://github.com/mangothecat/simplegraph/issues
+  ...
   Suggests:
       testthat
   Imports:
       argufy,
       utils
-  RoxygenNote: 5.0.1
+  ...
   ```
 * Put the following in any of your `.R` source files:
   
