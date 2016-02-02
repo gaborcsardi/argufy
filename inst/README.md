@@ -1,10 +1,17 @@
 
-
+```{r, setup, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  tidy = FALSE,
+  error = FALSE,
+  fig.width = 8,
+  fig.height = 8)
+```
 
 <h1 align="center">
     <br>
     <br>
-    <img width="400" src="./inst/logo.png" alt="crayon">
+    <img width="400" src="./inst/logo.png" alt="argufy">
     <br>
     <br>
     <br>
@@ -24,8 +31,7 @@ and add the checking code for you.
 
 ## Installation
 
-
-```r
+```{r eval = FALSE}
 devtools::install_github("gaborcsardi/argufy")
 ```
 
@@ -33,215 +39,265 @@ devtools::install_github("gaborcsardi/argufy")
 
 ### Introduction
 
+To use `argufy` in your R package, you need to import the `argufy_me`
+function. (You don't actually have to call the function, just import it.)
+
+Once you imported `argufy_me`, you can add assertions and coercions to
+your Roxygen headers, and these will be picked up automatically
+at installation time.
+
+If you use Roxygen, importing `argufy_me` requires two qiuck and easy
+steps:
+* Include `argufy` in the `Imports` entry in the `DESCRIPTION` file:
+
+  ```
+  Package: simplegraph
+  Title: Simple Graph Data Types and Basic Algorithms
+  Version: 1.0.1
+  Author: Gabor Csardi
+  Maintainer: Gabor Csardi <gcsardi@mango-solutions.com>
+  Description: Simple classic graph algorithms for simple graph classes.
+      Graphs may possess vertex and edge attributes. 'simplegraph' has
+      no dependencies and it is written entirely in R, so it is easy to
+      install.
+  License: MIT + file LICENSE
+  LazyData: true
+  URL: https://github.com/mangothecat/simplegraph
+  BugReports: https://github.com/mangothecat/simplegraph/issues
+  Suggests:
+      testthat
+  Imports:
+      argufy,
+      utils
+  RoxygenNote: 5.0.1
+  ```
+* Put the following in any of your `.R` source files:
+  
+  ```r
+  #' @importFrom argufy argufy_me
+  NULL
+  ```
+
+### Assertions
+
+State your assertions in the `@param` tags of your Roxygen
+documentation, inside `\assert{}` Rd tags. An assertion can
+be an R expression. It must evaluate to `TRUE`, each time the
+function is called, and the argument is supplied.
+
+The assertions are parsed by Roxygen, and put in the documentation.
+They are also parsed when your package is installed, and they are added
+to the body of the function(s) they refer to, automatically.
+
+When you load the package with `library` amd call the function,
+the added assertions are checked and an error is given if they fail.
+
+Let's see an example.
 
 ```r
-library(argufy)
-```
+#' Prefix of a string
+#'
+#' @param str \assert{is.character(str)} Character vector.
+#' @param len \assert{is.integer(len)} Integer vector.
+#' @return Prefix is string, of prescribed length.
 
-Assertions about function arguments are to be added among the arguments,
-after a `?` or a `?~` operator.
-
-`?` assertions are checks that are run against the argument's value, and
-errors are signalled for `FALSE` return values. The `?~` operator denotes
-coercions, see more about them later.
-
-The simplest assertion consists of a function name only. This is the
-function to be called with the argument's value.
-
-
-```r
-#' Return the prefixes of specified number of characters
-prefix <- function(
-    str =     ? is.character,
-    len =     ? is.numeric) {
-  substring(x, 1, y)
+prefix <- function(str, len) {
+  substring(str, 1, len)
 }
 ```
 
-Note that `argufy()` requires the equal signs after the argument names,
-even if they have no default values. Just leave out the default values.
-
-Also note that `prefix` is unusable as it is now. First you need to run
-`argufy()` on it, to interpret the declarative assertions, and add them
-to the code of the function. If you call `prefix` now, you might get
-error messages, because R interprets the assertions as default arguments.
-
+If you call Roxygen to create the Rd documentation for this function,
+and then install the package, `argufy` generates code from your assertions
+and injects the code into the body of the function:
 
 ```r
-prefix <- argufy(prefix)
-body(prefix)
-```
-
-```
+prefix
+#> function (str, len)
 #> {
 #>     {
-#>         stopifnot(is.character(str))
-#>         stopifnot(is.numeric(len))
+#>         if (!missing(str))
+#>             stopifnot(is.character(str))
+#>         if (!missing(len))
+#>             stopifnot(is.integer(len))
 #>     }
 #>     {
-#>         substring(x, 1, y)
+#>         substring(str, 1, len)
 #>     }
 #> }
 ```
 
-We used `body(prefix)` to print the code of the argufied `prefix` function.
-If you just type in the name of the function, then the original code is
-printed and you cannot actually see the checks. (This is because the
-`srcref` attribute of the original function is used for printing.)
+The assertions are also included in the generated manual pages:
+```
+Arguments:
+     str: [‘is.character(str)’] Character vector.
+     len: [‘is.integer(len)’] Integer vector.
+```
 
-It is suggested that you call `argufy()` as you create the function,
-so that you don't have unusable functions lying around:
+### Coercions
 
+Quite often, coercing the argument to the desired type is a better
+solution than a simple assertion, because it makes your function
+extensible. E.g. if your function takes a data frame argument, then
+instead of checking that the supplied object is indeed a data frame,
+you can try to coerce it to a data frame. This way, your function will
+work for any object that is coercible to a data frame (i.e. has an
+`as.data.frame()` method).
+
+`argufy` has a `\coerce{}` tag to declare coercions. It works very
+similarly to the `\assert{}` tag, but the generated code is different:
 
 ```r
-#' Return the prefixes of specified number of characters
-prefix <- argufy(function(
-    str =     ? is.character,
-    len =     ? is.numeric) {
-  substring(x, 1, y)
-})
+#' Prefix of a string
+#'
+#' @param str \coerce{as.character(str)} Character vector.
+#' @param len \coerce{as.integer(len)} Integer vector.
+#' @return Prefix is string, of prescribed length.
 
-body(prefix)
+prefix2 <- function(str, len) {
+  substring(str, 1, len)
+}
 ```
 
-```
+And the generated code:
+
+```r
+prefix2
+#> function (str, len)
 #> {
 #>     {
-#>         stopifnot(is.character(str))
-#>         stopifnot(is.numeric(len))
+#>         if (!missing(str))
+#>             str <- as.character(str)
+#>         if (!missing(len))
+#>             len <- as.integer(str)
 #>     }
 #>     {
-#>         substring(x, 1, y)
+#>         substring(str, 1, len)
 #>     }
 #> }
 ```
 
-Alternatively, if you are developing an R package, you can use
-the `argufy_package()` function, to run `argufy()` on all functions
-within your package. See more about this later.
+The coercion expression must fail by calling `stop()` if it is not
+possible to coerce the supplied value in a meaningful way.
 
-### Default values
+You can of course mix assertions and coercions for the same function.
 
-Default values can be specified after the equation signs, as usual,
-and they must also satisfy the assertions. Note that assertions
-on default values are only tested at running time, though.
+### More concise assertions with `.`
 
+`argufy` helps writing short and concise assertions. If your assertion
+is a single function call on the supplied argument, you can simply
+use the name of the function instead. For example:
 
 ```r
-#' Return the prefixes of specified number of characters
-prefix <- argufy(function(
-    str =     ? is.character,
-    len = 3   ? is.numeric) {
-  substring(x, 1, y)
-})
+#' Prefix of a string
+#'
+#' @param str \assert{is.character} Character vector.
+#' @param len \assert{is.integer} Integer vector.
+#' @return Prefix is string, of prescribed length.
 
-body(prefix)
+prefix <- function(str, len) {
+  substring(str, 1, len)
+}
 ```
 
+If your assertion is more complex, then you can use a dot: `.` instead
+of the argument name:
+
+```r
+#' Prefix of a string
+#'
+#' @param str \assert{is.character} Character vector.
+#' @param len \assert{is.integer(.) && length(.) == 1} Integer vector.
+#' @return Prefix is string, of prescribed length.
+
+prefix <- function(str, len) {
+  substring(str, 1, len)
+}
 ```
+
+### Assertions involving multiple arguments
+
+Assertions can refer to multiple arguments by name. An assertion
+can refer to any other argument, the order of the arguments
+does not matter at all:
+
+```r
+#' Sum of two matrices
+#'
+#' @param A \assert{is.matrix(.) && identical(dim(A), dim(B))}
+#'   The first matrix.
+#' @param B \assert{is.matrix(.) && identical(dim(A), dim(B))}
+#'   The second matrix.
+#' @return Their sum.
+
+plusmat <- function(A, B) A + B
+```
+
+The generated code:
+
+```r
+plusmat
+#> function (A, B)
 #> {
 #>     {
-#>         stopifnot(is.character(str))
-#>         stopifnot(is.numeric(len))
+#>         if (!missing(A))
+#>             stopifnot(is.matrix(A) && identical(dim(A), dim(B)))
+#>         if (!missing(B))
+#>             stopifnot(is.matrix(B) && identical(dim(A), dim(B)))
+#>     }
+#>     A + B
+#> }
+```
+
+### Reuse assertions for multiple functions
+
+If you declare an assertion for an argument, it will be used for
+all functions that share that argument, and are documented on that same Rd
+manual page. For example:
+
+```r
+#' Prefix of a string
+#'
+#' @param str \assert{as.character} Character vector.
+#' @param len \assert{as.integer} Integer vector.
+#' @return Prefix is string, of prescribed length.
+
+prefix <- function(str, len) {
+  substring(str, 1, len)
+}
+
+#' Suffix of a string
+#'
+#' @rdname prefix
+
+suffix <- function(str, len) {
+  substring(str, nchar(str) - len + 1, nchar(str))
+```
+
+The generated code:
+
+```r
+suffix
+#> function (str, len)
+#> {
+#>     {
+#>         if (!missing(str))
+#>             stopifnot(as.character(str))
+#>         if (!missing(len))
+#>             stopifnot(as.integer(len))
 #>     }
 #>     {
-#>         substring(x, 1, y)
+#>         substring(str, nchar(str) - len + 1, nchar(str))
 #>     }
 #> }
 ```
 
-### Simple assertions and coercions
+### Without Roxygen
 
-Simple assertions consist of a single function name. These will be called
-with the function argument's value, and they must return `TRUE`,
-otherwise an error is signalled.
-
-Often we don't want to specify a given type or class for an argument,
-only that R must be able to coerce the argument to it. This is
-what the `?~` operator does. Simple coercions consist of a single function
-name. These will be called with the function argument's value as a coercion.
-They must signal an error if the coercion is not possible. Here is an
-example for the `prefix` function. This time we only require that `str`
-can be converted to character vector:
-
-
-```r
-#' Return the prefixes of specified number of characters
-prefix <- argufy(function(
-    str =     ?~ as.character,
-    len = 3   ?  is.numeric) {
-  substring(x, 1, y)
-})
-
-body(prefix)
-```
-
-```
-#> {
-#>     {
-#>         str <- as.character(str)
-#>         stopifnot(is.numeric(len))
-#>     }
-#>     {
-#>         substring(x, 1, y)
-#>     }
-#> }
-```
-
-Note that the check implementation for `str` is now a coercion.
-
-### Generic assertions
-
-Sometimes a single function does not do enough, and a more complex
-assertion  or coercion is needed. E.g. we can require the `len` argument
-of `prefix` to be a finite numeric scalar, i.e. a vector of length one:
-
-
-```r
-#' Return the prefixes of specified number of characters
-prefix <- argufy(function(
-    str =     ?~ as.character,
-    len = 3   ?  is.numeric(len) && length(len) == 1 && is.finite(len)) {
-  substring(x, 1, y)
-})
-
-body(prefix)
-```
-
-```
-#> {
-#>     {
-#>         str <- as.character(str)
-#>         stopifnot(is.numeric(len) && length(len) == 1 && is.finite(len))
-#>     }
-#>     {
-#>         substring(x, 1, y)
-#>     }
-#> }
-```
-
-In this case the assertion must be a complete expression, and it
-must return `TRUE` if the assertion holds.
-
-### Using `argufy` in your packages
-
-You can just include your functions in `argufy()` calls. Note that in most
-cases you don't need the `argufy` package when you are _using_ your
-package. You only need it when you are _building_ your package. So it is a
-build time dependency, and it is perfectly fine to put it in
-`Suggests` in the `DESCRIPTION` file, you don't need to import anything
-from it.
-
-Alternatively, you can call the `argufy_package()` function, to run
-`argufy()` on all the functions in the package. For functions that do
-not contain any check declarations, this does nothing. You need to make
-sure that `argufy_package()` is called after all functions are defined:
-you need to put it at the end of the R file that is sourced last,
-e.g. you can name this file `zzz.R`. Alternatively you need to include
-a `Collate` field in your `DESCRIPTION` file, and put the source file
-with `argufy_package()` last.
+You can also use `argufy` without Roxygen. Simply put your assertions and
+coercions in the Rd manual pages, using the `\assert` and `\coerce` macros.
+They are automatically added to the functions at install time.
 
 ## License
 
-MIT © [Gábor Csárdi](https://github.com/gaborcsardi), 
+MIT © [Gábor Csárdi](https://github.com/gaborcsardi),
 [Jim Hester](http://www.jimhester.com/).

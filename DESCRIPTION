@@ -1,14 +1,17 @@
 Package: argufy
 Title: Declerative Arguments Checks
-Version: 1.0.0
+Version: 2.0.0
 Author: Gabor Csardi, Jim Hester
 Maintainer: Gabor Csardi <csardi.gabor@gmail.com>
-Description: Declare your functions with argument checks, and 'argufy' will generate and add the checking code for you.
+Description: Declare your functions with argument checks, and 'argufy' will
+    generate and add the checking code for you.
 License: MIT + file LICENSE
 LazyData: true
 URL: https://github.com/gaborcsardi/argufy
 BugReports: https://github.com/gaborcsardi/argufy/issues
-Imports: methods
-Suggests: 
+Depends:
+    R (>= 3.2.0)
+Suggests:
     testthat,
     disposables
+RoxygenNote: 5.0.1
