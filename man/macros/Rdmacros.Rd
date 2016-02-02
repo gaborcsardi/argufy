@@ -4,4 +4,5 @@
 }
 
 % Coercion
-\newcommand{\coerce}{[#1]}
+\newcommand{\coerce}{[\code{#1}] \% coerce
+}

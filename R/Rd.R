@@ -1,7 +1,6 @@
-
 map_rd <- function(pkgdir) {
 
-  map <- list()
+  map <- list(assert = list(), coerce = list())
 
   path <- file.path(pkgdir, "man")
   if (!file.exists(path)) {
@@ -64,8 +63,9 @@ map_rd1 <- function(rdfile, map, macros) {
 
   for (arg in names(argmap)) {
     check <- argmap[[arg]]$check
+    type <- argmap[[arg]]$type
     for (fun in argmap[[arg]]$funcs) {
-      map[[fun]] <- c(map[[fun]], structure(check, names = arg))
+      map[[type]][[fun]] <- c(map[[type]][[fun]], structure(check, names = arg))
     }
   }
 
@@ -91,15 +91,20 @@ rd_find_all <- function(rd, tag) {
 
 map_arg_to_func <- function(items, usage) {
 
-  checked_items <- Filter(assert_macro, items)
+  assertions <- Filter(assert_macro, items)
+  coercions  <- Filter(coerce_macro, items)
 
   map <- list()
 
-  for (x in checked_items) {
-    name <- as.vector(x[[1]][[1]])
-    check <- x[[2]][[1]][2]
-    map[[name]] <- list(check = check, funcs = character())
+  init_check <- function(items, type) {
+    for (x in items) {
+      name <- as.vector(x[[1]][[1]])
+      check <- x[[2]][[1]][2]
+      map[[name]] <<- list(check = check, funcs = character(), type = type)
+    }
   }
+  init_check(assertions, "assert")
+  init_check(coercions,  "coerce")
 
   if (length(map) == 0) return(map)
 
@@ -118,6 +123,11 @@ map_arg_to_func <- function(items, usage) {
 assert_macro <- function(x) {
   attr(x[[2]][[1]], "Rd_tag") == "USERMACRO" &&
     grepl("% assert\n$", x[[2]][[1]][1])
+}
+
+coerce_macro <- function(x) {
+  attr(x[[2]][[1]], "Rd_tag") == "USERMACRO" &&
+    grepl("% coerce\n$", x[[2]][[1]][1])
 }
 
 get_args <- function(x) {

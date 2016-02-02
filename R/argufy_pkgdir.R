@@ -17,19 +17,23 @@
 argufy_pkgdir <- function(pkg, pkg_dir, env) {
 
   amap <- map_rd(pkg_dir)
+  assert <- amap[["assert"]]
+  coerce <- amap[["coerce"]]
 
   funcs <- ls(env, all.names = TRUE)
   lapply(funcs, function(f) {
-    if (f %in% names(amap)) argufy_in(env, f, amap[[f]])
+    if (f %in% names(assert) || f %in% names(coerce)) {
+      argufy_in(env, f, assert[[f]], coerce[[f]])
+    }
   })
 
   invisible()
 }
 
-argufy_in <- function(env, fname, checks) {
+argufy_in <- function(env, fname, assertions, coercions) {
   fun <- get(fname, envir = env)
   if (!is.function(fun)) return()
-  fun <- argufy(fun, checks)
+  fun <- argufy(fun, assertions, coercions)
   assign(fname, fun, envir = env)
   invisible()
 }

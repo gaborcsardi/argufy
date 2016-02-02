@@ -12,7 +12,7 @@ argufy_me <- function() {
 #' The actual assertion code is generated automatically and inserted
 #' at the beginning into the function.
 
-argufy <- function(fun, checks) {
+argufy <- function(fun, assertions = NULL, coercions = NULL) {
   if (!is.function(fun)) stop("'fun' must be a function")
 
   # these statements are needed to get S4 functions to work properly
@@ -20,7 +20,7 @@ argufy <- function(fun, checks) {
   old_attributes <- attributes(fun)
 
   ## Add the checks to the body of the function
-  fun <- add_checks(fun, checks)
+  fun <- add_checks(fun, assertions, coercions)
 
   # S4 functions have additional attributes which need to be set, regular
   # functions do not have attributes so nothing is done.
@@ -87,16 +87,25 @@ create_check_expr <- function(checks) {
 }
 
 
-add_checks <- function(fun, checks) {
+add_checks <- function(fun, assertions, coercions) {
 
-  checks <- lapply(names(checks), function(x) {
+  assertions <- lapply(names(assertions), function(x) {
     list(
-      check = parse(text = checks[[x]])[[1]],
+      check = parse(text = assertions[[x]])[[1]],
       name = x,
       coercion = FALSE
     )
   })
 
+  coercions <- lapply(names(coercions), function(x) {
+    list(
+      check = parse(text = coercions[[x]])[[1]],
+      name = x,
+      coercion = TRUE
+    )
+  })
+
+  checks <- c(assertions, coercions)
   check_expr <- create_check_expr(checks)
 
   if (length(check_expr) <= 1) {

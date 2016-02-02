@@ -66,8 +66,6 @@ test_that("functions with complex assertions", {
 
 test_that("functions with simple coercions", {
 
-  skip("No coercions yet")
-  
   f <- argufy(
     function(x, y) x,
     coercions = c(x = "as.character"),
@@ -83,8 +81,6 @@ test_that("functions with simple coercions", {
 
 
 test_that("functions with complex coercions", {
-
-  skip("No coercions yet")
 
   f <- argufy(
     function(x, y) y,
@@ -138,8 +134,6 @@ test_that("complex assertion with missing values", {
 
 test_that("coercion with missing value", {
   
-  skip("No coercions yet")
-
   f <- function(x) {
     if (missing(x)) {
       "missing"
@@ -159,8 +153,6 @@ test_that("coercion with missing value", {
 
 test_that("complex coercion with missing values", {
 
-  skip("No coercions yet")
-  
   f <- function(x, y) {
     if (missing(y)) {
       "missing"
