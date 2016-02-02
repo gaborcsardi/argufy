@@ -19,3 +19,11 @@ parse_deps <- function(deps) {
 str_trim <- function(x) {
   sub("^\\s+", "", sub("\\s+$", "", x))
 }
+
+subs_dot <- function (expr, name) {
+  call <- substitute(
+    substitute(expr, list(. = as.name(name))),
+    list(expr = expr)
+  )
+  eval(call)
+}

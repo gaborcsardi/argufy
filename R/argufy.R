@@ -91,7 +91,7 @@ add_checks <- function(fun, assertions, coercions) {
 
   assertions <- lapply(names(assertions), function(x) {
     list(
-      check = parse(text = assertions[[x]])[[1]],
+      check = subs_dot(parse(text = assertions[[x]])[[1]], x),
       name = x,
       coercion = FALSE
     )
@@ -99,7 +99,7 @@ add_checks <- function(fun, assertions, coercions) {
 
   coercions <- lapply(names(coercions), function(x) {
     list(
-      check = parse(text = coercions[[x]])[[1]],
+      check = subs_dot(parse(text = coercions[[x]])[[1]], x),
       name = x,
       coercion = TRUE
     )
