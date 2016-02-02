@@ -1,6 +1,6 @@
 
 % Assertion
-\newcommand{\assert}{[#1] \% assert
+\newcommand{\assert}{[\code{#1}] \% assert
 }
 
 % Coercion
