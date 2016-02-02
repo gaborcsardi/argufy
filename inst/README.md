@@ -245,8 +245,8 @@ manual page. For example:
 ```r
 #' Prefix of a string
 #'
-#' @param str \assert{as.character} Character vector.
-#' @param len \assert{as.integer} Integer vector.
+#' @param str \assert{is.character} Character vector.
+#' @param len \assert{is.integer} Integer vector.
 #' @return Prefix is string, of prescribed length.
 
 prefix <- function(str, len) {
@@ -269,9 +269,9 @@ suffix
 #> {
 #>     {
 #>         if (!missing(str))
-#>             stopifnot(as.character(str))
+#>             stopifnot(is.character(str))
 #>         if (!missing(len))
-#>             stopifnot(as.integer(len))
+#>             stopifnot(is.integer(len))
 #>     }
 #>     {
 #>         substring(str, nchar(str) - len + 1, nchar(str))
