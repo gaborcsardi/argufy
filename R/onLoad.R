@@ -48,6 +48,14 @@ tracer_function <- function() {
     tracer_function
   ))
   suppressMessages(eval(trace_call))
+
+  help_trace_call <- as.call(list(
+    trace,
+    as.call(list(as.symbol("::"), quote(tools), quote(loadPkgRdMacros))),
+    print = FALSE,
+    help_tracer_function
+  ))
+  suppressMessages(eval(help_trace_call))
 }
 
 .onUnload <- function(path) {
@@ -56,4 +64,35 @@ tracer_function <- function() {
     as.call(list(as.symbol(":::"), quote(tools), quote(makeLazyLoadDB)))
   ))
   suppressMessages(eval(untrace_call))
+
+  help_untrace_call <- as.call(list(
+    untrace,
+    as.call(list(as.symbol("::"), quote(tools), quote(loadPkgRdMacros)))
+  ))
+  suppressMessages(eval(help_untrace_call))
+}
+
+help_tracer_function <- function() {
+  ## Check if a package is being installed
+  instframeno <- find_parent(quote(do_install_source))
+  if (is.na(instframeno)) return()
+
+  get_inst <- function(x) get(x, envir = sys.frame(instframeno))
+
+  ## If this is a recursive call, then bail out
+  if (length(find_all_parents(quote(loadPkgRdMacros))) > 1) return()
+
+  ## Check if the package uses argufy at all
+  desc <- get_inst("desc")
+  if (! "Imports" %in% names(desc)) return()
+  imps <- parse_deps(desc["Imports"])
+  if (! "argufy" %in% imps) return()
+
+  parentno <- find_parent(quote(loadPkgRdMacros))
+  get_parent <- function(x) get(x, envir = sys.frame(parentno))
+  set_parent <- function(x, v) assign(x, v, envir = sys.frame(parentno))
+
+  macros <- get_parent("macros")
+  macros <- loadPkgRdMacros(system.file(package = "argufy"), macros)
+  set_parent("macros", macros)
 }

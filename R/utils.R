@@ -7,6 +7,14 @@ find_parent <- function(name) {
   NA_integer_
 }
 
+find_all_parents <- function(name) {
+  calls <- sys.calls()
+  Filter(
+    function(i) identical(calls[[i]][[1]], name),
+    seq_along(calls)
+  )
+}
+
 
 parse_deps <- function(deps) {
   deps <- str_trim(strsplit(deps, ",")[[1]])
