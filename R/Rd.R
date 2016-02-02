@@ -73,7 +73,13 @@ map_rd1 <- function(rdfile, map, macros) {
 }
 
 
-#' Returns NULL if not found
+#' Find a given tag (the first one) in an Rd object
+#'
+#' @param rd Rd object.
+#' @param tag Character scalar, tag to find.
+#' @return The tag, or NULL of not found.
+#'
+#' @keywords internal
 
 rd_find <- function(rd, tag) {
   for (e in rd) {

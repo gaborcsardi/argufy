@@ -2,11 +2,20 @@
 % Please edit documentation in R/Rd.R
 \name{rd_find}
 \alias{rd_find}
-\title{Returns NULL if not found}
+\title{Find a given tag (the first one) in an Rd object}
 \usage{
 rd_find(rd, tag)
 }
-\description{
-Returns NULL if not found
+\arguments{
+\item{rd}{Rd object.}
+
+\item{tag}{Character scalar, tag to find.}
 }
+\value{
+The tag, or NULL of not found.
+}
+\description{
+Find a given tag (the first one) in an Rd object
+}
+\keyword{internal}
 

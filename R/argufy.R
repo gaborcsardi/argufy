@@ -1,16 +1,28 @@
 
+#' Function to import to run argufy on your package
+#'
+#' This function does nothing, and only exists in itself.
+#' It can be imported into a package, and then all functions of
+#' that package will be transformed by argufy.
+#'
 #' @export
 
 argufy_me <- function() {
   "OK, boss."
 }
 
-#' @title Add argument checks to a function
+#' Add argument checks to a function
 #'
-#' @description
 #' Function argument assertions via a concise declerative syntax.
 #' The actual assertion code is generated automatically and inserted
 #' at the beginning into the function.
+#'
+#' @param fun Function to add assertions to.
+#' @param assertions Character scalar, assertion expression.
+#' @param coercions Character scalar, coercion expression.
+#' @return Function with assertions added.
+#'
+#' @keywords internal
 
 argufy <- function(fun, assertions = NULL, coercions = NULL) {
   if (!is.function(fun)) stop("'fun' must be a function")
