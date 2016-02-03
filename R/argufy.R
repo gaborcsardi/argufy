@@ -46,13 +46,13 @@ argufy <- function(fun, assertions = NULL, coercions = NULL) {
 create_assertion_call <- function(check) {
   if (is.name(check$check)) {
     substitute(
-      if (!missing(`_name_`)) argufy::assert(`_check_`(`_name_`)),
+      argufy::assert(`_check_`(`_name_`)),
       list(`_check_` = check$check, `_name_` = as.name(check$name))
     )
 
   } else {
     substitute(
-      if (!missing(`_name_`)) argufy::assert(`_expr_`),
+      argufy::assert(`_expr_`),
       list(`_expr_` = check$check, `_name_` = as.name(check$name))
     )
   }
@@ -62,13 +62,13 @@ create_assertion_call <- function(check) {
 create_coercion_call <- function(check) {
   if (is.name(check$check)) {
     substitute(
-      if (!missing(`_name_`)) `_name_` <- `_coerce_`(`_name_`),
+      `_name_` <- `_coerce_`(`_name_`),
       list(`_coerce_` = check$check, `_name_` = as.name(check$name))
     )
 
   } else {
     substitute(
-      if (!missing(`_name_`)) `_name_` <- `_expr_`,
+      `_name_` <- `_expr_`,
       list(`_name_` = as.name(check$name), `_expr_` = check$check)
     )
   }
