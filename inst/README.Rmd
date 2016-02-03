@@ -1,6 +1,13 @@
 <!-- -*- mode: markdown -*- -->
 
-
+```{r, setup, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  tidy = FALSE,
+  error = FALSE,
+  fig.width = 8,
+  fig.height = 8)
+```
 
 <h1 align="center">
     <br>
@@ -25,8 +32,7 @@ and add the checking code for you.
 
 ## Installation
 
-
-```r
+```{r eval = FALSE}
 devtools::install_github("gaborcsardi/argufy")
 ```
 
@@ -77,8 +83,7 @@ the added assertions are checked and an error is given if they fail.
 
 Let's see an example.
 
-
-```r
+```{r}
 #' Prefix of a string
 #'
 #' @param str \assert{is.character(str)} Character vector.
@@ -94,20 +99,11 @@ If you call Roxygen to create the Rd documentation for this function,
 and then install the package, `argufy` generates code from your assertions
 and injects the code into the body of the function:
 
-
-```
-#> function (str, len) 
-#> {
-#>     {
-#>         if (!missing(str)) 
-#>             argufy::assert(is.character(str))
-#>         if (!missing(len)) 
-#>             argufy::assert(is.integer(len))
-#>     }
-#>     {
-#>         substring(str, 1, len)
-#>     }
-#> }
+```{r echo=FALSE}
+print(argufy:::argufy(
+  prefix,
+  assertions = c(str = "is.character(str)", len = "is.integer(len)")
+), useSource = FALSE)
 ```
 
 The assertions are also included in the generated manual pages:
@@ -130,8 +126,7 @@ work for any object that is coercible to a data frame (i.e. has an
 `argufy` has a `\coerce{}` tag to declare coercions. It works very
 similarly to the `\assert{}` tag, but the generated code is different:
 
-
-```r
+```{r}
 #' Prefix of a string
 #'
 #' @param str \coerce{as.character(str)} Character vector.
@@ -145,20 +140,11 @@ prefix2 <- function(str, len) {
 
 And the generated code:
 
-
-```
-#> function (str, len) 
-#> {
-#>     {
-#>         if (!missing(str)) 
-#>             str <- as.character(str)
-#>         if (!missing(len)) 
-#>             len <- as.integer(len)
-#>     }
-#>     {
-#>         substring(str, 1, len)
-#>     }
-#> }
+```{r, echo = FALSE}
+print(argufy:::argufy(
+  prefix,
+  coercions = c(str = "as.character(str)", len = "as.integer(len)")
+), useSource = FALSE)
 ```
 
 The coercion expression must fail by calling `stop()` if it is not
@@ -172,8 +158,7 @@ You can of course mix assertions and coercions for the same function.
 is a single function call on the supplied argument, you can simply
 use the name of the function instead. For example:
 
-
-```r
+```{r}
 #' Prefix of a string
 #'
 #' @param str \assert{is.character} Character vector.
@@ -188,8 +173,7 @@ prefix <- function(str, len) {
 If your assertion is more complex, then you can use a dot: `.` instead
 of the argument name:
 
-
-```r
+```{r}
 #' Prefix of a string
 #'
 #' @param str \assert{is.character} Character vector.
@@ -207,8 +191,7 @@ Assertions can refer to multiple arguments by name. An assertion
 can refer to any other argument, the order of the arguments
 does not matter at all:
 
-
-```r
+```{r}
 #' Sum of two matrices
 #'
 #' @param A \assert{is.matrix(.) && identical(dim(A), dim(B))}
@@ -222,20 +205,14 @@ plusmat <- function(A, B) A + B
 
 The generated code:
 
-
-```
-#> function (A, B) 
-#> {
-#>     {
-#>         if (!missing(A)) 
-#>             argufy::assert(is.matrix(A) && identical(dim(A), 
-#>                 dim(B)))
-#>         if (!missing(B)) 
-#>             argufy::assert(is.matrix(B) && identical(dim(A), 
-#>                 dim(B)))
-#>     }
-#>     A + B
-#> }
+```{r echo = FALSE}
+print(argufy:::argufy(
+  plusmat,
+  assertions = c(
+    A = "is.matrix(.) && identical(dim(A), dim(B))",
+    B = "is.matrix(.) && identical(dim(A), dim(B))"
+  )
+), useSource = FALSE)
 ```
 
 ### Reuse assertions for multiple functions
@@ -244,8 +221,7 @@ If you declare an assertion for an argument, it will be used for
 all functions that share that argument, and are documented on that same Rd
 manual page. For example:
 
-
-```r
+```{r}
 #' Prefix of a string
 #'
 #' @param str \assert{is.character} Character vector.
@@ -265,22 +241,13 @@ suffix <- function(str, len) {
 }
 ```
 
-The generated code:
+The generated code for suffix:
 
-
-```
-#> function (str, len) 
-#> {
-#>     {
-#>         if (!missing(str)) 
-#>             argufy::assert(is.character(str))
-#>         if (!missing(len)) 
-#>             argufy::assert(is.character(len))
-#>     }
-#>     {
-#>         substring(str, nchar(str) - len + 1, nchar(str))
-#>     }
-#> }
+```{r echo = FALSE}
+print(argufy:::argufy(
+  suffix,
+  assertions = c(str = "is.character", len = "is.character")
+), useSource = FALSE)
 ```
 
 ### Without Roxygen
