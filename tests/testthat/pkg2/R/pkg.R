@@ -6,10 +6,17 @@ NULL
 #' @param graph \assert{is.graph(.)} The input graph.
 #' @export
 
-print.graph <- function(graph) {
+foobar.graph <- function(graph) {
   cat("coocoo!\n")
 }
 
+#' @export
+
 is.graph <- function(graph) {
-  inherits(graph, "graph")
+  FALSE
 }
+
+#' @export
+
+foobar <- function(graph)
+  UseMethod("foobar")

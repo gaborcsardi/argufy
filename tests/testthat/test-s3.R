@@ -7,7 +7,7 @@ test_that("Rd parsing", {
   expect_equal(
     map,
     list(
-      assert = list(print.graph = c(graph = "is.graph(.)")),
+      assert = list(foobar.graph = c(graph = "is.graph(.)")),
       coerce = list()
     )
   )
@@ -16,10 +16,12 @@ test_that("Rd parsing", {
 test_that("Package with S3", {
 
   test_package <- function() {
+    library(pkg2)
     on.exit(unloadNamespace("pkg2"))
 
+    x <- structure(1, class = "graph")
     expect_error(
-      pkg2::print.graph(NULL),
+      foobar(x),
       "is.graph.graph. is not TRUE"
     )
   }
