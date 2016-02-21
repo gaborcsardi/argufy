@@ -16,5 +16,5 @@ Suggests:
     assertthat,
     checkmate,
     testthat,
-    disposables
+    withr
 RoxygenNote: 5.0.1
