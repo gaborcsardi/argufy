@@ -99,10 +99,8 @@ and injects the code into the body of the function:
 #> function (str, len) 
 #> {
 #>     {
-#>         if (!missing(str)) 
-#>             argufy::assert(is.character(str))
-#>         if (!missing(len)) 
-#>             argufy::assert(is.integer(len))
+#>         argufy::assert(is.character(str))
+#>         argufy::assert(is.integer(len))
 #>     }
 #>     {
 #>         substring(str, 1, len)
@@ -150,10 +148,8 @@ And the generated code:
 #> function (str, len) 
 #> {
 #>     {
-#>         if (!missing(str)) 
-#>             str <- as.character(str)
-#>         if (!missing(len)) 
-#>             len <- as.integer(len)
+#>         str <- as.character(str)
+#>         len <- as.integer(len)
 #>     }
 #>     {
 #>         substring(str, 1, len)
@@ -227,12 +223,8 @@ The generated code:
 #> function (A, B) 
 #> {
 #>     {
-#>         if (!missing(A)) 
-#>             argufy::assert(is.matrix(A) && identical(dim(A), 
-#>                 dim(B)))
-#>         if (!missing(B)) 
-#>             argufy::assert(is.matrix(B) && identical(dim(A), 
-#>                 dim(B)))
+#>         argufy::assert(is.matrix(A) && identical(dim(A), dim(B)))
+#>         argufy::assert(is.matrix(B) && identical(dim(A), dim(B)))
 #>     }
 #>     A + B
 #> }
@@ -265,17 +257,15 @@ suffix <- function(str, len) {
 }
 ```
 
-The generated code:
+The generated code for suffix:
 
 
 ```
 #> function (str, len) 
 #> {
 #>     {
-#>         if (!missing(str)) 
-#>             argufy::assert(is.character(str))
-#>         if (!missing(len)) 
-#>             argufy::assert(is.character(len))
+#>         argufy::assert(is.character(str))
+#>         argufy::assert(is.character(len))
 #>     }
 #>     {
 #>         substring(str, nchar(str) - len + 1, nchar(str))
