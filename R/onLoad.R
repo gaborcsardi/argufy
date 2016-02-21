@@ -9,6 +9,8 @@
 ## because tracing on exit just calls on.exit(), and that will possibly
 ## interfere with the regular on.exit() calls within the function.
 
+                                        # nocov start
+
 tracer_function <- function() {
   ## Check if a package is being installed
   instframeno <- find_parent(quote(do_install_source))
@@ -113,3 +115,5 @@ devtools_tracer_function <- function() {
   ns <- getExportedValue("devtools", "ns_env")(pkg)
   argufy_pkgdir(pkg$name, pkg$path, ns)
 }
+
+                                        # nocov end
