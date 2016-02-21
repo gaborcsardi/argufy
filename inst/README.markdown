@@ -100,8 +100,8 @@ and injects the code into the body of the function:
 #> function (str, len) 
 #> {
 #>     {
-#>         argufy::assert(is.character(str))
-#>         argufy::assert(is.integer(len))
+#>         stopifnot(is.character(str))
+#>         stopifnot(is.integer(len))
 #>     }
 #>     {
 #>         substring(str, 1, len)
@@ -224,8 +224,8 @@ The generated code:
 #> function (A, B) 
 #> {
 #>     {
-#>         argufy::assert(is.matrix(A) && identical(dim(A), dim(B)))
-#>         argufy::assert(is.matrix(B) && identical(dim(A), dim(B)))
+#>         stopifnot(is.matrix(A) && identical(dim(A), dim(B)))
+#>         stopifnot(is.matrix(B) && identical(dim(A), dim(B)))
 #>     }
 #>     A + B
 #> }
@@ -265,8 +265,8 @@ The generated code for suffix:
 #> function (str, len) 
 #> {
 #>     {
-#>         argufy::assert(is.character(str))
-#>         argufy::assert(is.character(len))
+#>         stopifnot(is.character(str))
+#>         stopifnot(is.character(len))
 #>     }
 #>     {
 #>         substring(str, nchar(str) - len + 1, nchar(str))

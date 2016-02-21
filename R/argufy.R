@@ -46,13 +46,13 @@ argufy <- function(fun, assertions = NULL, coercions = NULL) {
 create_assertion_call <- function(check) {
   if (is.name(check$check)) {
     substitute(
-      argufy::assert(`_check_`(`_name_`)),
+      stopifnot(`_check_`(`_name_`)),
       list(`_check_` = check$check, `_name_` = as.name(check$name))
     )
 
   } else {
     substitute(
-      argufy::assert(`_expr_`),
+      stopifnot(`_expr_`),
       list(`_expr_` = check$check, `_name_` = as.name(check$name))
     )
   }
