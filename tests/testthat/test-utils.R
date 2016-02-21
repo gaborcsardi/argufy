@@ -19,6 +19,8 @@ test_that("find_parent", {
       "bar"
     )
   }
+
+  f()
 })
 
 test_that("find_all_parents", {
@@ -40,6 +42,8 @@ test_that("find_all_parents", {
       "bar"
     )
   }
+
+  f(recurse = TRUE)
 })
 
 test_that("parse_deps", {
@@ -58,4 +62,32 @@ test_that("parse_deps", {
   lapply(test_cases, function(t) {
     expect_equal(parse_deps(t[[1]]), t[[2]], info = t[[1]])
   })
+})
+
+test_that("str_trim", {
+
+  res <- "foo"
+
+  expect_equal(str_trim(""), "")
+  expect_equal(str_trim(" "), "")
+  expect_equal(str_trim("\n"), "")
+  expect_equal(str_trim("\t"), "")
+  expect_equal(str_trim(" \n\t\n "), "")
+  expect_equal(str_trim(res), res)
+
+  expect_equal(str_trim("foo "), res)
+  expect_equal(str_trim(" foo"), res)
+  expect_equal(str_trim(" foo "), res)
+
+  expect_equal(str_trim("foo  "), res)
+  expect_equal(str_trim("  foo "), res)
+  expect_equal(str_trim("  foo  "), res)
+
+  expect_equal(str_trim("foo\n "), res)
+  expect_equal(str_trim(" \nfoo"), res)
+  expect_equal(str_trim(" \n foo \n "), res)
+
+  expect_equal(str_trim("foo\t"), res)
+  expect_equal(str_trim("\tfoo"), res)
+  expect_equal(str_trim("\tfoo\n"), res)
 })

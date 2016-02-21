@@ -55,7 +55,7 @@ map_rd1 <- function(rdfile, map, macros) {
     macros = macros
   )
 
-  usage <- rd_find(Rd, "\\usage")
+  usage <- simplify_usage(rd_find(Rd, "\\usage"))
   args <- rd_find(Rd, "\\arguments")
   items <- rd_find_all(args, "\\item")
 
@@ -115,7 +115,7 @@ map_arg_to_func <- function(items, usage) {
   if (length(map) == 0) return(map)
 
   for (u in usage) {
-    usage_args <- get_args(u)
+    usage_args <- get_usage_args(u)
     for (ua in usage_args$args) {
       if (ua %in% names(map)) {
         map[[ua]]$funcs <- c(map[[ua]]$funcs, usage_args$name)
@@ -136,23 +136,21 @@ coerce_macro <- function(x) {
     grepl("% coerce\n$", x[[2]][[1]][1])
 }
 
-get_args <- function(x) {
-
-  fun <- tryCatch(
-    as.list(parse(text = x)[[1]]),
-    error = function(e) list("foo")
-  )
-
-  args <- lapply(
-    seq_along(fun)[-1],
-    function(i) {
-      if (is.null(names(fun)) || names(fun)[i] == "") {
-        as.character(fun[[i]])
-      } else {
-        names(fun)[i]
-      }
+simplify_usage <- function(x) {
+  txt <- vapply(x, FUN.VALUE = "", function(u) {
+    if (attr(u, "Rd_tag") == "\\method") {
+      paste(u[[1]], u[[2]], sep = ".")
+    } else {
+      paste(unlist(u), collapse = "")
     }
-  )
+  })
 
-  list(name = as.character(fun[[1]]), args = args)
+  parse(text = paste(txt, collapse = ""))
+}
+
+get_usage_args <- function(x) {
+  list(
+    name = as.character(x[[1]]),
+    args = vapply(as.list(x)[-1], as.character, "")
+  )
 }

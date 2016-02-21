@@ -30,5 +30,20 @@ test_that("map_rd", {
 
 test_that("map_rd1", {
   map <- map_rd1("ex1.Rd", map = list(), get_rd_macros(NULL))
+  expect_equal(
+    map,
+    list(assert = c(vertex_ids = "is_simplegraph(graph)"))
+  )
+})
 
+test_that("map_rd warnings", {
+
+  expect_warning(map_rd(tempfile()), "No manual pages")
+
+  tmp <- tempfile()
+  dir.create(tmp)
+  expect_warning(map_rd(tmp), "No manual pages")
+
+  cat("foo", file = file.path(tmp, "man"))
+  expect_warning(map_rd(tmp), "is not a directory")
 })
