@@ -56,6 +56,16 @@ tracer_function <- function() {
     help_tracer_function
   ))
   suppressMessages(eval(help_trace_call))
+
+  devtools_trace_call <- as.call(list(
+    trace,
+    as.call(list(as.symbol(":::"), quote(devtools), quote(run_ns_load_actions))),
+    print = FALSE,
+    devtools_tracer_function
+  ))
+  if ("devtools" %in% loadedNamespaces()) {
+    suppressMessages(eval(devtools_trace_call))
+  }
 }
 
 .onUnload <- function(path) {
@@ -95,4 +105,11 @@ help_tracer_function <- function() {
   macros <- get_parent("macros")
   macros <- loadPkgRdMacros(system.file(package = "argufy"), macros)
   set_parent("macros", macros)
+}
+
+devtools_tracer_function <- function() {
+  frameno <- find_parent(quote(run_ns_load_actions))
+  pkg <- get("pkg", envir = sys.frame(frameno))
+  ns <- getExportedValue("devtools", "ns_env")(pkg)
+  argufy_pkgdir(pkg$name, pkg$path, ns)
 }
