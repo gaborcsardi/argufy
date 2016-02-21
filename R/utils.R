@@ -35,8 +35,3 @@ subs_dot <- function (expr, name) {
   )
   eval(call)
 }
-
-fun_pkg <- function(fun) {
-  name <- environmentName(environment(fun))
-  if (is.character(name) && length(name) == 1) name else ""
-}
