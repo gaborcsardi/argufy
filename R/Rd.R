@@ -149,8 +149,19 @@ simplify_usage <- function(x) {
 }
 
 get_usage_args <- function(x) {
+
+  get_argnames <- function(args) {
+    if (is.null(names(args))) {
+      vapply(args, as.character, "")
+    } else {
+      unlist(
+        ifelse(names(args) == "", lapply(args, as.character), names(args))
+      )
+    }
+  }
+
   list(
     name = as.character(x[[1]]),
-    args = vapply(as.list(x)[-1], as.character, "")
+    args = get_argnames(as.list(x)[-1])
   )
 }

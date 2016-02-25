@@ -47,3 +47,12 @@ test_that("map_rd warnings", {
   cat("foo", file = file.path(tmp, "man"))
   expect_warning(map_rd(tmp), "is not a directory")
 })
+
+test_that("named arguments", {
+  usage <- quote(degree(graph, mode = c("out", "in", "total", "all")))
+  args <- get_usage_args(usage)
+  expect_equal(
+    args,
+    list(name = "degree", args = c("graph", "mode"))
+  )
+})
