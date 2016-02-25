@@ -11,7 +11,7 @@ knitr::opts_chunk$set(
 
 # argufy
 
-> Declarative Arguments Checks
+> Declarative Argument Checks
 
 [![Project Status: WIP - Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip)
 [![Linux Build Status](https://travis-ci.org/gaborcsardi/argufy.svg?branch=master)](https://travis-ci.org/gaborcsardi/argufy)
@@ -21,8 +21,8 @@ knitr::opts_chunk$set(
 [![Coverage Status](https://img.shields.io/codecov/c/github/gaborcsardi/argufy/master.svg)](https://codecov.io/github/gaborcsardi/argufy?branch=master)
 
 
-Declare your functions with argument checks, and `argufy()` will generate
-and add the checking code for you.
+Declare your functions with argument checks, and `argufy` generates
+and inserts the checking code for you.
 
 ## Installation
 
@@ -36,14 +36,13 @@ devtools::install_github("gaborcsardi/argufy")
 
 To use `argufy` in your R package, you need to import the `argufy_me`
 function. (You don't actually have to call the function, just import it.)
-
 Once you imported `argufy_me`, you can add assertions and coercions to
 your Roxygen headers, and these will be picked up automatically
 at installation time.
 
-If you use Roxygen, importing `argufy_me` requires two qiuck and easy
+In other words, importing `argufy_me` requires two qiuck and easy
 steps:
-* Include `argufy` in the `Imports` entry in the `DESCRIPTION` file:
+* Include `argufy` in the `Imports` entry of the `DESCRIPTION` file:
 
   ```
   ...
@@ -54,7 +53,8 @@ steps:
       utils
   ...
   ```
-* Put the following in any of your `.R` source files:
+* Import the `argufy_me` function in a Roxygen header; put the following
+  in any of your `.R` source files:
   
   ```r
   #' @importFrom argufy argufy_me
@@ -64,16 +64,19 @@ steps:
 ### Assertions
 
 State your assertions in the `@param` tags of your Roxygen
-documentation, inside `\assert{}` Rd tags. An assertion can
-be an R expression. It must evaluate to `TRUE`, each time the
-function is called, and the argument is supplied.
+documentation, inside `\assert{}` Rd tags. An assertion is
+an R expression. It must evaluate to `TRUE`, each time the
+function is called, and the argument is supplied, otherwise
+the function quits with an error.
 
-The assertions are parsed by Roxygen, and put in the documentation.
-They are also parsed when your package is installed, and they are added
-to the body of the function(s) they refer to, automatically.
+The assertions are parsed by Roxygen, and put in the manual page
+of the function as well. They are also parsed when your package is
+installed, and they are inserted to the body of the function(s) they refer
+to, automatically. 
 
-When you load the package with `library` amd call the function,
-the added assertions are checked and an error is given if they fail.
+When the user of your package loads your package via `library()`
+or imports it into another package, the assertions are checked
+and an error is given if any of them fail.
 
 Let's see an example.
 
