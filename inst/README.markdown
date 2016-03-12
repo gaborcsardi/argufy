@@ -27,7 +27,7 @@ and inserts the checking code for you.
     - [Coercions](#coercions)
     - [More concise assertions with `.`](#more-concise-assertions-with-)
     - [Assertions involving multiple arguments](#assertions-involving-multiple-arguments)
-	- [Reuse assertions for multiple functions](#reuse-assertions-for-multipt-functions)
+	- [Reuse assertions for multiple functions](#reuse-assertions-for-multiple-functions)
 	- [Without Roxygen](#without-roxygen)
   - [License](#license)
 
