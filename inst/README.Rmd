@@ -36,6 +36,7 @@ and inserts the checking code for you.
     - [Assertions involving multiple arguments](#assertions-involving-multiple-arguments)
 	- [Reuse assertions for multiple functions](#reuse-assertions-for-multiple-functions)
 	- [Without Roxygen](#without-roxygen)
+  - [Frequently asked questions](#frequently-asked-questions)
   - [License](#license)
 
 ## Installation
@@ -68,7 +69,7 @@ steps:
   ```
 * Import the `argufy_me` function in a Roxygen header, and call the function.
   I.e. put the following in any of your `.R` source files:
-  
+
   ```r
   #' @importFrom argufy argufy_me
   NULL
@@ -86,7 +87,7 @@ the function quits with an error.
 The assertions are parsed by Roxygen, and put in the manual page
 of the function as well. They are also parsed when your package is
 installed, and they are inserted to the body of the function(s) they refer
-to, automatically. 
+to, automatically.
 
 When the user of your package loads your package via `library()`
 or imports it into another package, the assertions are checked
@@ -298,6 +299,53 @@ print(argufy:::argufy(
 You can also use `argufy` without Roxygen. Simply put your assertions and
 coercions in the Rd manual pages, using the `\assert` and `\coerce` macros.
 They are automatically added to the functions at install time.
+
+## Frequently asked questions
+
+### I get an `R CMD check` `NOTE`
+
+Right now `R CMD check` gives the following note about the `RdMacros`
+field in `DESCRIPTION`:
+
+```
+Unknown, possibly mis-spelled, field in DESCRIPTION:
+  ‘RdMacros’
+```
+
+This is a bug in `R CMD check`. `RdMacros` is a valid entry, it is
+documented in [Writing R extensions](https://cran.r-project.org/doc/manuals/r-devel/R-exts.html#The-DESCRIPTION-file).
+
+### I get warnings when building my package
+
+```r
+Warning: /tmp/Rtmp4dc3Q5/Rbuild5b3c7afe189/mypackage/man/myfun.Rd:10:
+  unknown macro '\assert'
+```
+
+This is probably because you did not add the `RdMacros: argufy` entry
+to `DESCRIPTION`.
+
+### Assertions do not show up when using `devtools`
+
+This is because the `srcref` attribute of the function is not modified,
+so when printing it to the screen, the original, unpatched code is shown.
+Use `print(func, useSource = FALSE)` to see the real, patched source code.
+
+### How can I know that `argufy` worked during installation
+
+Various ways:
+* You'll see a message during installation:
+
+   ```
+   ** preparing package for lazy loading
+   ** argufying functions
+   ** help
+   ```
+* Check the source code of the functions in the installed packages.
+* Check the manual pages of the installed package.
+* Try calling the functions with assertions and see if you get
+  the expected error message(s).
+* You can also write test cases for it.
 
 ## License
 
