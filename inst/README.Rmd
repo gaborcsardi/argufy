@@ -24,6 +24,20 @@ knitr::opts_chunk$set(
 Declare your functions with argument checks, and `argufy` generates
 and inserts the checking code for you.
 
+---
+
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [Introduction](#introduction)
+    - [Assertions](#assertions)
+	- [Internal functions](#internal-functions)
+    - [Coercions](#coercions)
+    - [More concise assertions with `.`](#more-concise-assertions-with-)
+    - [Assertions involving multiple arguments](#assertions-involving-multiple-arguments)
+	- [Reuse assertions for multiple functions](#reuse-assertions-for-multipt-functions)
+	- [Without Roxygen](#without-roxygen)
+  - [License](#license)
+
 ## Installation
 
 ```{r eval = FALSE}
