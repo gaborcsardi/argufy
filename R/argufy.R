@@ -89,7 +89,11 @@ argufy_header <- paste(
 
 create_check_expr <- function(checks) {
   exprs <- drop_nulls(lapply(checks, get_check_expr))
-  as.call(c(list(quote(`{`)), c(list(argufy_header), exprs)))
+  if (length(exprs)) {
+    as.call(c(list(quote(`{`)), c(list(argufy_header), exprs)))
+  } else {
+    quote({})
+  }
 }
 
 
