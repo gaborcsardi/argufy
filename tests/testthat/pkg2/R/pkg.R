@@ -2,6 +2,8 @@
 #' @importFrom argufy argufy_me
 NULL
 
+argufy::argufy_me()
+
 #' Print a graph
 #' @param graph \assert{is.graph(.)} The input graph.
 #' @export

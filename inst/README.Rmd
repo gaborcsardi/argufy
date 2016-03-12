@@ -34,11 +34,11 @@ devtools::install_github("gaborcsardi/argufy")
 
 ### Introduction
 
-To use `argufy` in your R package, you need to import the `argufy_me`
-function. (You don't actually have to call the function, just import it.)
-Once you imported `argufy_me`, you can add assertions and coercions to
-your Roxygen headers, and these will be picked up automatically
-at installation time.
+To use `argufy` in your R package, you need to import and call the
+`argufy_me` function. Once you called `argufy_me`, you can add
+assertions and coercions to your Roxygen headers, and these will be picked
+up automatically at installation time. You also need to add `argufy`
+to the `RdMacros` entry of the package.
 
 In other words, importing `argufy_me` requires two qiuck and easy
 steps:
@@ -46,19 +46,19 @@ steps:
 
   ```
   ...
-  Suggests:
-      testthat
   Imports:
-      argufy,
-      utils
+      argufy
+  RdMacros:
+	  argufy
   ...
   ```
-* Import the `argufy_me` function in a Roxygen header; put the following
-  in any of your `.R` source files:
+* Import the `argufy_me` function in a Roxygen header, and call the function.
+  I.e. put the following in any of your `.R` source files:
   
   ```r
   #' @importFrom argufy argufy_me
   NULL
+  argufy::argufy_me()
   ```
 
 ### Assertions

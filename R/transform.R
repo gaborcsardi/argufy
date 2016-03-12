@@ -38,39 +38,13 @@ tracer_function <- function() {
   pkg_dir <- get_inst("pkg_dir")
   argufy_pkgdir(pkg, pkg_dir, fun_env)
 
+  argufy_untrace()
+
   invisible()
 }
 
-.onLoad <- function(libname, pkgname) {
 
-  trace_call <- as.call(list(
-    trace,
-    as.call(list(as.symbol(":::"), quote(tools), quote(makeLazyLoadDB))),
-    print = FALSE,
-    tracer_function
-  ))
-  suppressMessages(eval(trace_call))
-
-  help_trace_call <- as.call(list(
-    trace,
-    as.call(list(as.symbol("::"), quote(tools), quote(loadPkgRdMacros))),
-    print = FALSE,
-    help_tracer_function
-  ))
-  suppressMessages(eval(help_trace_call))
-
-  devtools_trace_call <- as.call(list(
-    trace,
-    as.call(list(as.symbol(":::"), quote(devtools), quote(run_ns_load_actions))),
-    print = FALSE,
-    devtools_tracer_function
-  ))
-  if ("devtools" %in% loadedNamespaces()) {
-    suppressMessages(eval(devtools_trace_call))
-  }
-}
-
-.onUnload <- function(path) {
+argufy_untrace <- function() {
   untrace_call <- as.call(list(
     untrace,
     as.call(list(as.symbol(":::"), quote(tools), quote(makeLazyLoadDB)))
@@ -82,7 +56,17 @@ tracer_function <- function() {
     as.call(list(as.symbol("::"), quote(tools), quote(loadPkgRdMacros)))
   ))
   suppressMessages(eval(help_untrace_call))
+
+  devtools_untrace_call <- as.call(list(
+    untrace,
+    as.call(list(as.symbol(":::"), quote(devtools), quote(run_ns_load_actions)))
+  ))
+  if ("devtools" %in% loadedNamespaces()) {
+    suppressMessages(eval(devtools_untrace_call))
+  }
+
 }
+
 
 help_tracer_function <- function() {
   ## Check if a package is being installed
@@ -114,6 +98,45 @@ devtools_tracer_function <- function() {
   pkg <- get("pkg", envir = sys.frame(frameno))
   ns <- getExportedValue("devtools", "ns_env")(pkg)
   argufy_pkgdir(pkg$name, pkg$path, ns)
+
+  argufy_untrace()
 }
 
                                         # nocov end
+
+#' Function to import to run argufy on your package
+#'
+#' Call this function from the package that you want to argufy.
+#' It does not matter where it is called from, as long as the
+#' call is not inside other functions.
+#'
+#' @export
+
+argufy_me <- function() {
+
+  trace_call <- as.call(list(
+    trace,
+    as.call(list(as.symbol(":::"), quote(tools), quote(makeLazyLoadDB))),
+    print = FALSE,
+    tracer_function
+  ))
+  suppressMessages(eval(trace_call))
+
+  help_trace_call <- as.call(list(
+    trace,
+    as.call(list(as.symbol("::"), quote(tools), quote(loadPkgRdMacros))),
+    print = FALSE,
+    help_tracer_function
+  ))
+  suppressMessages(eval(help_trace_call))
+
+  devtools_trace_call <- as.call(list(
+    trace,
+    as.call(list(as.symbol(":::"), quote(devtools), quote(run_ns_load_actions))),
+    print = FALSE,
+    devtools_tracer_function
+  ))
+  if ("devtools" %in% loadedNamespaces()) {
+    suppressMessages(eval(devtools_trace_call))
+  }
+}

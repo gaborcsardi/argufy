@@ -2,6 +2,8 @@
 #' @importFrom argufy argufy_me
 NULL
 
+argufy::argufy_me()
+
 #' Prefix of a string
 #'
 #' @param str \assert{is.character} Character vector.

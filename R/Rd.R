@@ -27,21 +27,25 @@ map_rd <- function(pkgdir) {
 get_rd_macros <- function(pkgdir) {
 
   ## System level extra macros
-  macros <- loadRdMacros(
+  macros <- tools::loadRdMacros(
     file.path(R.home("share"), "Rd", "macros", "system.Rd")
   )
 
   ## Macros from the package being installed
-  if (!is.null(pkgdir)) macros <- loadPkgRdMacros(pkgdir, macros)
+  if (!is.null(pkgdir)) macros <- tools::loadPkgRdMacros(pkgdir, macros)
 
   ## Argufy macros, two possibilities, because in devtools it is different
   argufy_macros1 <-
     system.file(package = "argufy", "help", "macros", "Rdmacros.Rd")
-  if (argufy_macros1 != "") macros <- loadRdMacros(argufy_macros1, macros)
+  if (argufy_macros1 != "") {
+    macros <- tools::loadRdMacros(argufy_macros1, macros)
+  }
 
   argufy_macros2 <-
     system.file(package = "argufy", "man", "macros", "Rdmacros.Rd")
-  if (argufy_macros2 != "") macros <- loadRdMacros(argufy_macros2, macros)
+  if (argufy_macros2 != "") {
+    macros <- tools::loadRdMacros(argufy_macros2, macros)
+  }
 
   macros
 }
@@ -49,7 +53,7 @@ get_rd_macros <- function(pkgdir) {
 
 map_rd1 <- function(rdfile, map, macros) {
 
-  Rd <- parse_Rd(
+  Rd <- tools::parse_Rd(
     rdfile,
     permissive = TRUE,
     macros = macros

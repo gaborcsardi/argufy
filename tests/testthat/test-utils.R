@@ -1,10 +1,6 @@
 
 context("Utilities")
 
-test_that("argufy_me", {
-  expect_equal(argufy_me(), "OK, boss.")
-})
-
 test_that("find_parent", {
 
   f <- function() {
