@@ -112,6 +112,49 @@ Arguments:
      len: [‘is.integer(len)’] Integer vector.
 ```
 
+### Internal functions
+
+It is possible to add assertions to internal functions, with a little bit
+of extra work. If an internal function has assertions defined in `@param`
+Roxygen tags, it is also required to add the `@keywords internal` tag, and
+a manual page title. Roxygen will generate a manual page for the function
+in this case, but will not include it in the index of manual pages:
+
+
+```r
+#' This is an internal function that merges two named lists, elementwise,
+#' @param x \assert{is_named_list} First list.
+#' @param y \assert(is_named_list} Second list.
+#' @keywords internal
+
+merge_lists <- function(x, y) {
+  names <- unique(sort(c(names(x), names(y))))
+  structure(
+    lapply(names, function(n) { c(x[[n]], y[[n]]) }),
+    names = names
+  )
+}
+```
+
+The generated code:
+
+
+```
+#> function (x, y) 
+#> {
+#>     {
+#>         stopifnot(is_named_list(x))
+#>         stopifnot(is_named_list(y))
+#>     }
+#>     {
+#>         names <- unique(sort(c(names(x), names(y))))
+#>         structure(lapply(names, function(n) {
+#>             c(x[[n]], y[[n]])
+#>         }), names = names)
+#>     }
+#> }
+```
+
 ### Coercions
 
 Quite often, coercing the argument to the desired type is a better
